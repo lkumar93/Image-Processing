@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 2.8)
+project( week1 )
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+add_executable( sampling ../src/sampling.cpp )
+target_link_libraries( sampling ${OpenCV_LIBS} )
+add_executable( quantize ../src/quantize.cpp )
+target_link_libraries( quantize ${OpenCV_LIBS} )
