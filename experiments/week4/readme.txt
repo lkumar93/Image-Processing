@@ -7,4 +7,4 @@ To compile the code, follow the instructions below
 
 To run the code, go to the build directory and do
 ./morphological_filter
-./bilatereal_filter
+./bilateral_filter
