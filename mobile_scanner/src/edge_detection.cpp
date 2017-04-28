@@ -1,5 +1,5 @@
 //
-// THIS FILE CONTAINS THE IMPLEMENTATION OF CANNY EDGE DETECTION
+// THIS FILE CONTAINS VARIOUS IMPLEMENTATIONS OF EDGE DETECTION
 //
 // COPYRIGHT BELONGS TO THE AUTHOR OF THIS CODE
 //
@@ -25,8 +25,9 @@
 //
 ///////////////////////////////////////////
 
-#include "morphological_filter.h"
-#include "canny_edge_detection.h"
+#include "image_filters.h"
+#include "image_enhancement.h"
+#include "edge_detection.h"
 
 ///////////////////////////////////////////
 //
@@ -34,82 +35,84 @@
 //
 ///////////////////////////////////////////
 
-//Mat image_padding(const Mat& input_image, int offset)
-//{
-//   Mat padded_image = Mat(input_image.rows+2*offset, input_image.cols+2*offset, CV_32F, 0.0);
 
-//   for(int j = 0; j < input_image.rows ; j++)
-//        for(int i = 0; i < input_image.cols; i++)
-//        {
-//	    padded_image.at<float>(j+offset,i+offset) = input_image.at<uchar>(j,i);
-//        }
+void sobel_edge_detection(const Mat& input_image, Mat& image_gradient, Mat& image_gradient_direction, Mat& horizontal_image, Mat& vertical_image)
+{
 
-//    return padded_image;
-//}
+   Mat horizontal_kernel = Mat(3, 3, CV_32F, 0.0);
+   Mat vertical_kernel = Mat(3, 3, CV_32F, 0.0);
+   Mat nms_image, double_thresholded_image;
 
-//Mat image_depadding(const Mat& input_image, int offset)
-//{
-//   Mat depadded_image = Mat(input_image.rows-2*offset, input_image.cols-2*offset, CV_32F, 0.0);
+   horizontal_kernel.at<float>(0,0) = 1 ;
+   horizontal_kernel.at<float>(0,1) = 0 ;
+   horizontal_kernel.at<float>(0,2) = -1 ;
 
-//   for(int j = 0; j < input_image.rows-2*offset ; j++)
-//        for(int i = 0; i < input_image.cols-2*offset; i++)
-//        {
-//	    depadded_image.at<float>(j,i) = input_image.at<float>(j+offset,i+offset);
-//        }
+   horizontal_kernel.at<float>(1,0) = 2 ;
+   horizontal_kernel.at<float>(1,1) = 0 ;
+   horizontal_kernel.at<float>(1,2) = -2 ;
 
-//    return depadded_image;
-//}
+   horizontal_kernel.at<float>(2,0) = 1 ;
+   horizontal_kernel.at<float>(2,1) = 0 ;
+   horizontal_kernel.at<float>(2,2) = -1 ;
 
-//Mat convolve(const Mat& input_image, const Mat& kernel)
-//{
-//  
-//   int kernel_size = kernel.rows;
+   vertical_kernel.at<float>(0,0) = 1 ;
+   vertical_kernel.at<float>(0,1) = 2 ;
+   vertical_kernel.at<float>(0,2) = 1 ;
 
-//   int offset;
+   vertical_kernel.at<float>(1,0) = 0 ;
+   vertical_kernel.at<float>(1,1) = 0 ;
+   vertical_kernel.at<float>(1,2) = 0 ;
 
-//   if(kernel_size % 2 != 0)
-//   {
-//	offset = (kernel_size+1)/2 - 1;
-//   }
-//   else
-//   {
-//	offset = (kernel_size)/2 - 1;
-//   }
+   vertical_kernel.at<float>(2,0) = -1 ;
+   vertical_kernel.at<float>(2,1) = -2 ;
+   vertical_kernel.at<float>(2,2) = -1 ;
 
-//  Mat padded_image = image_padding(input_image, offset);
+   horizontal_image = convolve(input_image, horizontal_kernel); 
+   vertical_image = convolve(input_image, vertical_kernel); 
 
-//  Mat flipped_kernel = Mat(kernel.rows, kernel.cols, CV_32F, 0.0);
+   image_gradient = get_image_gradient(input_image,horizontal_image, vertical_image);
 
-//   for(int m = 0; m < kernel_size ; m++)
-//	for(int n = 0; n < kernel_size; n++)
-//	{
-//		flipped_kernel.at<float>(m,n) = kernel.at<float>(kernel_size-m-1,kernel_size-n-1);
-//	}
+   image_gradient_direction = get_image_gradient_direction(input_image, horizontal_image, vertical_image);
 
-//  Mat convolved_image = Mat(padded_image.rows, padded_image.cols, CV_32F, 0.0);	
+}
 
-//  float value = 0.0;
-//  for(int j = offset; j < padded_image.rows - offset ; j++)
-//       for(int i = offset; i < padded_image.cols - offset; i++)
-//       {
-//		  
-//	   for(int m = 0; m < kernel_size ; m++)
-//		for(int n = 0; n < kernel_size; n++)
-//		{
 
-//		    value += (padded_image.at<float>(j+m-offset,i+n-offset))*flipped_kernel.at<float>(m,n);
+void prewitt_edge_detection(const Mat& input_image, Mat& image_gradient, Mat& image_gradient_direction, Mat& horizontal_image, Mat& vertical_image)
+{
+   Mat horizontal_kernel = Mat(3, 3, CV_32F, 0.0);
+   Mat vertical_kernel = Mat(3, 3, CV_32F, 0.0);
 
-//		}
+   horizontal_kernel.at<float>(0,0) = 1 ;
+   horizontal_kernel.at<float>(0,1) = 0 ;
+   horizontal_kernel.at<float>(0,2) = -1 ;
 
-//	   convolved_image.at<float>(j,i)  = value;
-//	   
-//	   value = 0;	 
-//       }
+   horizontal_kernel.at<float>(1,0) = 1 ;
+   horizontal_kernel.at<float>(1,1) = 0 ;
+   horizontal_kernel.at<float>(1,2) = -1 ;
 
-//  Mat depadded_image = image_depadding(convolved_image, offset);
-//  
-//  return depadded_image;
-//}
+   horizontal_kernel.at<float>(2,0) = 1 ;
+   horizontal_kernel.at<float>(2,1) = 0 ;
+   horizontal_kernel.at<float>(2,2) = -1 ;
+
+   vertical_kernel.at<float>(0,0) = 1 ;
+   vertical_kernel.at<float>(0,1) = 1 ;
+   vertical_kernel.at<float>(0,2) = 1 ;
+
+   vertical_kernel.at<float>(1,0) = 0 ;
+   vertical_kernel.at<float>(1,1) = 0 ;
+   vertical_kernel.at<float>(1,2) = 0 ;
+
+   vertical_kernel.at<float>(2,0) = -1 ;
+   vertical_kernel.at<float>(2,1) = -1 ;
+   vertical_kernel.at<float>(2,2) = -1 ;
+
+   horizontal_image = convolve(input_image, horizontal_kernel); 
+   vertical_image = convolve(input_image, vertical_kernel);
+
+   image_gradient = get_image_gradient(input_image, horizontal_image, vertical_image);
+   image_gradient_direction = get_image_gradient_direction(input_image, horizontal_image, vertical_image);
+
+}
 
 
 Mat get_image_gradient(const Mat& input_image, const Mat& horizontal_image, const Mat& vertical_image)
@@ -140,71 +143,6 @@ Mat get_image_gradient_direction(const Mat& input_image, const Mat& horizontal_i
  
    return filtered_image;
 
-}
-
-void threshold_image(const Mat& input_image, Mat& thresholded_image, float threshold, bool inverse=false, bool adaptive=false)
-{
-
-   
-   thresholded_image = input_image.clone();
-   int image_type = input_image.type();
-   thresholded_image.convertTo(thresholded_image,CV_8UC1);
-   Mat blurred_image;
-
-   if(image_type == CV_32F)
-	blurred_image = gaussian_filter(thresholded_image,5,1.4);
-   else
-   	blurred_image = gaussian_filter(input_image,11,1.8);
-   blurred_image.convertTo(blurred_image,image_type);
-
-   float c = threshold;
-   for(int j = 1; j < input_image.rows-1; j++)
-	for(int i =1; i < input_image.cols-1; i++)
-	{
-		if(image_type == CV_8UC1)
-		{
-			if(adaptive)
-			{
-				threshold =(int) saturate_cast<uchar>(blurred_image.at<uchar>(j,i) - c);
-				
-			}
-
-			if (input_image.at<uchar>(j,i) >= threshold)
-				if(inverse)
-					thresholded_image.at<uchar>(j,i) = 0;
-				else
-					thresholded_image.at<uchar>(j,i) = 255;
-			else
-				if(inverse)
-					thresholded_image.at<uchar>(j,i) = 255;
-				else
-					thresholded_image.at<uchar>(j,i) = 0;
-		}
-		else if(image_type == CV_32F)
-		{
-			if(adaptive)
-			{
-				threshold = (blurred_image.at<float>(j,i) - c);
-			}
-
-			if (input_image.at<float>(j,i) >= threshold)
-				if(inverse)
-					thresholded_image.at<uchar>(j,i) = 0;
-				else
-					thresholded_image.at<uchar>(j,i) = 255;
-			else
-				if(inverse)
-					thresholded_image.at<uchar>(j,i) = 255;
-				else
-					thresholded_image.at<uchar>(j,i) = 0;
-
-		}
-
-
-	}
-
-//   namedWindow("blur", WINDOW_AUTOSIZE);
-//   imshow("blur", blurred_image); 
 }
 
 Mat non_maximum_suppression(const Mat& image_gradient,const Mat& gradient_direction, const Mat& horizontal_image, const Mat& vertical_image)
@@ -442,47 +380,6 @@ Mat hysterisis(const Mat& input_image, int max_threshold, int min_threshold)
 
 }
 
-void sobel_filter(const Mat& input_image, Mat& image_gradient, Mat& image_gradient_direction, Mat& horizontal_image, Mat& vertical_image)
-{
-
-   Mat horizontal_kernel = Mat(3, 3, CV_32F, 0.0);
-   Mat vertical_kernel = Mat(3, 3, CV_32F, 0.0);
-   Mat nms_image, double_thresholded_image;
-
-   horizontal_kernel.at<float>(0,0) = 1 ;
-   horizontal_kernel.at<float>(0,1) = 0 ;
-   horizontal_kernel.at<float>(0,2) = -1 ;
-
-   horizontal_kernel.at<float>(1,0) = 2 ;
-   horizontal_kernel.at<float>(1,1) = 0 ;
-   horizontal_kernel.at<float>(1,2) = -2 ;
-
-   horizontal_kernel.at<float>(2,0) = 1 ;
-   horizontal_kernel.at<float>(2,1) = 0 ;
-   horizontal_kernel.at<float>(2,2) = -1 ;
-
-   vertical_kernel.at<float>(0,0) = 1 ;
-   vertical_kernel.at<float>(0,1) = 2 ;
-   vertical_kernel.at<float>(0,2) = 1 ;
-
-   vertical_kernel.at<float>(1,0) = 0 ;
-   vertical_kernel.at<float>(1,1) = 0 ;
-   vertical_kernel.at<float>(1,2) = 0 ;
-
-   vertical_kernel.at<float>(2,0) = -1 ;
-   vertical_kernel.at<float>(2,1) = -2 ;
-   vertical_kernel.at<float>(2,2) = -1 ;
-
-   horizontal_image = convolve(input_image, horizontal_kernel); 
-   vertical_image = convolve(input_image, vertical_kernel); 
-
-   image_gradient = get_image_gradient(input_image,horizontal_image, vertical_image);
-
-   image_gradient_direction = get_image_gradient_direction(input_image, horizontal_image, vertical_image);
-
-}
-
-
 
 Mat canny_edge_detection(const Mat& input_image, float threshold_l, float threshold_h)
 {
@@ -493,7 +390,7 @@ Mat canny_edge_detection(const Mat& input_image, float threshold_l, float thresh
 
    GaussianBlur(gaussian_filtered_image,gaussian_filtered_image,Size(5,5), 1.4, 1.4, BORDER_DEFAULT);
 
-   sobel_filter(gaussian_filtered_image, image_gradient,gradient_direction, horizontal_image, vertical_image);
+   sobel_edge_detection(gaussian_filtered_image, image_gradient,gradient_direction, horizontal_image, vertical_image);
 
    threshold_image(image_gradient,sobel_filtered_image, THRESHOLD_CANNY);
 
@@ -510,76 +407,5 @@ Mat canny_edge_detection(const Mat& input_image, float threshold_l, float thresh
 
    return double_thresholded_image;
 
-
-//   std::ostringstream path1, path2, path3 ;
-//   path1<<"../results/canny_edge_detection/sobel_edge_detector"<<num<<".jpg";
-//   path2<<"../results/canny_edge_detection/canny_edge_detector"<<num<<".jpg";
-//   path3<<"../results/canny_edge_detection/nms_image"<<num<<".jpg";
-
-//   namedWindow("Image Gradient", WINDOW_AUTOSIZE);
-//   imwrite( path1.str(), image_gradient );
-//   imshow("Sobel Image Gradient", image_gradient);
-
-//   namedWindow("Sobel Filter ", WINDOW_AUTOSIZE);
-//   imwrite( path1.str(), sobel_filtered_image );
-//   imshow("Sobel Filter ", sobel_filtered_image);
-
-//   namedWindow("Non Maximum Suppression", WINDOW_AUTOSIZE);
-//   imwrite( path3.str(), nms_image );
-//   imshow("Non Maximum Suppression", nms_image);
-
-//   namedWindow("Hysterisis", WINDOW_AUTOSIZE);
-//   imwrite(path2.str(), double_thresholded_image );
-//   imshow("Hysterisis", double_thresholded_image);  
-
 }
-
-///////////////////////////////////////////
-//
-//	MAIN FUNCTION
-//
-///////////////////////////////////////////
-
-//int main(int argc, char** argv )
-//{
-//    Mat grayscale_image1,grayscale_image2,grayscale_image3,grayscale_image4,grayscale_image5;
-
-//    Mat image1 = imread( "../results/filter/equalized_image_1.jpg", 1 );
-//    Mat image2 = imread( "../results/filter/gaussian_filtered_image_2.jpg", 1 );
-//    Mat image3 = imread( "../results/filter/median_filtered_image_3.jpg", 1 );
-
-//    //http://cnx.org/resources/4181ddf62e3a2047d36357f16180ce247b094532/plane_noise1.png
-//    Mat image4 = imread( "../results/filter/median_filtered_image_4.jpg", 1 );
-
-//    //en.wikipedia.org/wiki/File:Phase_correlation.png
-//    Mat image5 = imread( "../results/filter/gaussian_filtered_image_5.jpg", 1 );
-
-//    cv::Mat resized_image2 = cv::Mat(640, 1000, CV_8UC1, cv::Scalar(0, 0, 0)) ;
-
-//    resize(image2,resized_image2,resized_image2.size(),0,0);
-
-//    imwrite( "../results/canny_edge_detection/equalized_image2.jpg", resized_image2 );
-
-//  if ( !image1.data || !resized_image2.data || !image3.data || !image4.data || !image5.data)
-//    {
-//        printf("No image data \n");
-//        return -1;
-//    }
-
-//    cvtColor( image1, grayscale_image1, CV_BGR2GRAY );
-//    cvtColor( resized_image2, grayscale_image2, CV_BGR2GRAY );
-//    cvtColor( image3, grayscale_image3, CV_BGR2GRAY );
-//    cvtColor( image4, grayscale_image4, CV_BGR2GRAY );
-//    cvtColor( image5, grayscale_image5, CV_BGR2GRAY );
-
-//    canny_edge_detection(grayscale_image1,1);
-//    canny_edge_detection(grayscale_image2,2);
-//    canny_edge_detection(grayscale_image3,3);
-//    canny_edge_detection(grayscale_image4,4);
-//    canny_edge_detection(grayscale_image5,5);
-
-//    waitKey(0);
-
-//    return 0;
-//}
 

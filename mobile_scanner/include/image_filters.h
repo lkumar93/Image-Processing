@@ -1,6 +1,6 @@
 //
-// THIS HEADER FILE CONTAINS THE DECLARATION OF THE VARIABLES AND FUNCTIONS OF 
-// THE MORPHOLOGICAL FILTER IMPLEMENTATION
+// THIS HEADER FILE CONTAINS THE DECLARATION OF THE VARIABLES AND FUNCTIONS
+// REQUIRED FOR FILTERING IMAGES
 //
 // COPYRIGHT BELONGS TO THE AUTHOR OF THIS CODE
 //
@@ -21,8 +21,8 @@
 //
 
 
-#ifndef MORPHOLOGICAL_FILTER_H_
-#define MORPHOLOGICAL_FILTER_H_
+#ifndef IMAGE_FILTERS_H_
+#define IMAGE_FILTERS_H_
 
 ///////////////////////////////////////////
 //
@@ -33,7 +33,14 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
+///////////////////////////////////////////
+//
+//	DEFINITIONS
+//
+///////////////////////////////////////////
+
 #define PI 3.14159
+
 ///////////////////////////////////////////
 //
 //	NAMESPACE
@@ -49,6 +56,7 @@ using namespace cv;
 ///////////////////////////////////////////
 
 void merge(int A[ ] , int start, int mid, int end);
+
 void merge_sort (int A[ ] , int start , int end );
 
 Mat image_padding(const Mat& input_image, int offset);
@@ -65,5 +73,27 @@ Mat mean_filter(const Mat& input_image, int kernel_size);
 
 Mat gaussian_filter(const Mat& input_image, int kernel_size, float sigma);
 
-#endif // MORPHOLOGICAL_FILTER_H_
+Mat bilateral_convolve(const Mat& input_image, const Mat& gaussian_kernel, float sigma_r);
+
+Mat bilateral_filter(const Mat& input_image, int kernel_size, float sigma_g, float sigma_r);
+
+Mat image_padding_for_dft(const Mat& input_image);
+
+Mat add_noise(const Mat& input_image, int std_dev);
+
+Mat get_gaussian_blur_kernel(int kernel_size, float sigma);
+
+Mat get_motion_blur_kernel(int kernel_size);
+
+Mat fourier_transform(const Mat& padded_image);
+
+Mat power_spectrum(const Mat& input_image);
+
+Mat wiener_filter(const Mat& noisy_image, const Mat& signal_spectrum, Mat kernel, int kernel_size, float threshold, float std_dev);
+
+Mat inverse_filter(const Mat& noisy_image, Mat kernel, int kernel_size, float std_dev, float threshold = 0.2, bool pseudo_inverse = false);
+
+Mat pad_kernel(cv::Size size,const Mat& kernel, int kernel_size);
+
+#endif // IMAGE_FILTERS_H_
 

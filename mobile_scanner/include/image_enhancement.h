@@ -1,6 +1,6 @@
 //
-// THIS HEADER FILE CONTAINS THE DECLARATION OF THE VARIABLES AND FUNCTIONS OF 
-// THE HARRIS CORNER DETECTION IMPLEMENTATION
+// THIS HEADER FILE CONTAINS THE DECLARATION OF THE VARIABLES AND FUNCTIONS 
+// REQUIRED FOR ENHANCING IMAGES
 //
 // COPYRIGHT BELONGS TO THE AUTHOR OF THIS CODE
 //
@@ -20,8 +20,9 @@
 // CONDITIONS.
 //
 
-#ifndef HARRIS_CORNER_DETECTION_H_
-#define HARRIS_CORNER_DETECTION_H_
+
+#ifndef IMAGE_ENHANCEMENT_H_
+#define IMAGE_ENHANCEMENT_H_
 
 ///////////////////////////////////////////
 //
@@ -31,7 +32,6 @@
 
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include "image_filters.h"
 
 ///////////////////////////////////////////
 //
@@ -39,10 +39,9 @@
 //
 ///////////////////////////////////////////
 
-
-//#define THRESHOLD 1000000000//
-#define THRESHOLD 35000000000 //
-#define DISTANCE_THRESHOLD 10
+#define R_WEIGHT 0.2989
+#define G_WEIGHT 0.5870
+#define B_WEIGHT 0.1140
 
 ///////////////////////////////////////////
 //
@@ -51,7 +50,6 @@
 ///////////////////////////////////////////
 
 using namespace cv;
-using namespace std;
 
 ///////////////////////////////////////////
 //
@@ -59,25 +57,17 @@ using namespace std;
 //
 ///////////////////////////////////////////
 
+Mat convert_to_grayscale(const Mat& input_image);
+void compute_histogram(const Mat& input_image, int histogram[]);
+void display_histogram(int histogram[], const char* name);
+void compute_cumulative_histogram(int histogram[], int cumulative_histogram[]);
+int scale_histogram(int cumulative_histogram[],int scaled_histogram[], float scaling_factor);
+Mat equalize_image(const Mat& input_image);
+Mat log_transformation(const Mat& input_image, int transformation_constant);
+Mat inverse_transformation(const Mat& input_image);
+Mat gamma_correction(const Mat& input_image, int gamma);
+Mat sharpen(const Mat& input_image, int kernel_size, float alpha);
+void threshold_image(const Mat& input_image, Mat& thresholded_image, float threshold, bool inverse = false, bool adaptive = false);
 
-struct IndexT
-{
-	int col;
-	int row;
-
-	float distance(int j, int i);
-};
-
-struct CornerT
-{
-	std::vector<IndexT> corner_indices;
-	Mat corner_image;
-};
-
-
-
-CornerT harris_corner_detection(const Mat& input_image);
-
-
-#endif // HARRIS_CORNER_DETECTION_H_
+#endif // IMAGE_ENHANCEMENT_H_
 

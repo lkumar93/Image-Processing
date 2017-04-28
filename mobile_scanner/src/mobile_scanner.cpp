@@ -1,6 +1,6 @@
 //
 // THIS FILE CONTAINS THE IMPLEMENTATION OF A MOBILE DOCUMENT SCANNER
-
+//
 // COPYRIGHT BELONGS TO THE AUTHOR OF THIS CODE
 //
 // AUTHOR : LAKSHMAN KUMAR
@@ -28,8 +28,9 @@
 
 #include <iostream>
 #include <opencv2/opencv.hpp>
-#include "morphological_filter.h"
-#include "canny_edge_detection.h"
+#include "image_filters.h"
+#include "image_enhancement.h"
+#include "edge_detection.h"
 #include "harris_corner_detection.h"
 
 //#define THRESHOLD_RATIO_H 220
@@ -37,6 +38,8 @@
 
 #define THRESHOLD_RATIO_H 0.24
 #define THRESHOLD_RATIO_L 0.2
+
+#define USE_OPENCV false
 
 using namespace cv;
 using namespace std;
@@ -178,7 +181,7 @@ Mat perspective_transform(Point2f corner_points[], Point2f reference_points[])
 ///////////////////////////////////////////
 int main(int argc, char** argv )
 {
-    Mat rgb_image, grayscale_image, equalized_image,detected_edges;
+    Mat rgb_image, grayscale_image, equalized_image,detected_edges, canny_detected_edges;
     rgb_image = imread( "../images/receipt.jpg", 1 );
 
     if ( !rgb_image.data )
@@ -196,35 +199,58 @@ int main(int argc, char** argv )
    
     rgb_image = rgb_image_resized;
 
+   if(USE_OPENCV)
+   {
     cvtColor( rgb_image_resized , grayscale_image, CV_BGR2GRAY );
+
+    equalizeHist(grayscale_image,grayscale_image);
 
     bilateralFilter(grayscale_image, equalized_image, 5, 25, 20);
 
-    equalizeHist(equalized_image,equalized_image);
+    Canny( equalized_image, canny_detected_edges, 75, 220, 3 );
+    }
 
-   //Canny( equalized_image, detected_edges, THRESHOLD_RATIO_L, THRESHOLD_RATIO_H, 3 );
-    Mat canny_detected_edges = canny_edge_detection(equalized_image, THRESHOLD_RATIO_L, THRESHOLD_RATIO_H);
+    else
+    {
+     grayscale_image =  convert_to_grayscale(rgb_image_resized);
+
+     equalized_image = equalize_image(grayscale_image);
+
+     equalized_image = bilateral_filter(equalized_image, 5, 15, 10);
+
+     if(equalized_image.type() != CV_8UC1)
+	equalized_image.convertTo(equalized_image, CV_8UC1);
+
+     equalized_image = sharpen(equalized_image,5, 0.1);
+
+     canny_detected_edges = canny_edge_detection(equalized_image, THRESHOLD_RATIO_L, THRESHOLD_RATIO_H);
+
+    }
 
     detected_edges =  morphological_filter( canny_detected_edges, 5, true, false);
-
-   detected_edges.convertTo(detected_edges, CV_8UC1);
-
-    detected_edges =  morphological_filter( detected_edges, 3, false, false);
-
-   detected_edges.convertTo(detected_edges, CV_8UC1);
+  
+    if(detected_edges.type() != CV_8UC1)
+	    detected_edges.convertTo(detected_edges, CV_8UC1);
 
     detected_edges =  morphological_filter( detected_edges, 3, false, false);
 
-   detected_edges.convertTo(detected_edges, CV_8UC1);
+    if(detected_edges.type() != CV_8UC1)
+	    detected_edges.convertTo(detected_edges, CV_8UC1);
+
+    detected_edges =  morphological_filter( detected_edges, 3, false, false);
+
+    if(detected_edges.type() != CV_8UC1)
+	    detected_edges.convertTo(detected_edges, CV_8UC1);
 
     detected_edges =  morphological_filter( detected_edges, 3, true, false);
 
-   detected_edges.convertTo(detected_edges, CV_8UC1);
+    if(detected_edges.type() != CV_8UC1)
+	    detected_edges.convertTo(detected_edges, CV_8UC1);
 
-   vector<vector<Point> > contours;
-   vector<Vec4i> hierarchy;
-   vector<Point> largest_contour;
-   vector<Point> rectangle;
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
+    vector<Point> largest_contour;
+    vector<Point> rectangle;
 
    findContours( detected_edges, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
@@ -324,14 +350,27 @@ int main(int argc, char** argv )
 
            Mat lambda( 2, 4, CV_32FC1 );
 
-           Mat output( height, width, CV_32FC1 );
+	   Mat warped_image = Mat::ones(height,width,CV_8UC1)*0;
+
+
+	  if(USE_OPENCV)   	
+	  {
+	 
+		  lambda = getPerspectiveTransform( input_rectangle, output_rectangle );
+
+		  warpPerspective(rgb_image,warped_image,lambda,warped_image.size() );
+
+		  cvtColor(warped_image,warped_image, CV_BGR2GRAY);
+
+	  }
+
+	  else
+	  {
 
 	   Mat pt =  perspective_transform(input_rectangle, output_rectangle);
 
 	   Mat transformed_point = Mat::ones(3,1,CV_32F);
 	   Mat given_point = Mat::ones(3,1,CV_32F); 
-
-	   Mat warped_image = Mat::ones(height,width,CV_8UC1)*255;
 
 	   for( int j = 0; j <  grayscale_image.rows ; j++ )
    	      for( int i = 0; i <  grayscale_image.cols; i++ )
@@ -349,17 +388,15 @@ int main(int argc, char** argv )
 
 		}
 
-	  medianBlur(warped_image,warped_image,3);	   	
+	   warped_image = median_filter(warped_image, 3);
 
-	  lambda = getPerspectiveTransform( input_rectangle, output_rectangle );
+	   if(warped_image.type()!=CV_8UC1)
+		warped_image.convertTo(warped_image, CV_8UC1);
+	   }
 
-	  warpPerspective(rgb_image,output,lambda,output.size() );
+	  Mat receipt = warped_image;
 
-          cvtColor(output,output, CV_BGR2GRAY);
-
-	  Mat receipt = output;
-
-	  threshold_image(output, receipt, 6, false, true);
+	  threshold_image(warped_image, receipt, 6, false, true);
 
 	  namedWindow("Input", WINDOW_AUTOSIZE);
           imwrite( "../results/mobile_scanner/resized_input.jpg", rgb_image_resized );
@@ -386,8 +423,8 @@ int main(int argc, char** argv )
 	  imshow("Corner Detection",detected_corners);
 
 	  namedWindow("Warp with Perspective Transform", WINDOW_AUTOSIZE);
-          imwrite( "../results/mobile_scanner/warped_image.jpg", output );
-	  imshow("Warp with Perspective Transform",output);	  
+          imwrite( "../results/mobile_scanner/warped_image.jpg", warped_image );
+	  imshow("Warp with Perspective Transform",warped_image);	  
 
 	  namedWindow("Adaptive Thresholding", WINDOW_AUTOSIZE);
           imwrite( "../results/mobile_scanner/adaptive_thresholding.jpg", receipt );

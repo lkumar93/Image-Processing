@@ -1,6 +1,6 @@
 //
-// THIS HEADER FILE CONTAINS THE DECLARATION OF THE VARIABLES AND FUNCTIONS OF 
-// THE CANNY EDGE DETECTION IMPLEMENTATION
+// THIS HEADER FILE CONTAINS THE DECLARATION OF THE VARIABLES AND FUNCTIONS 
+// REQUIRED FOR VARIOUS EDGE DETECTORS
 //
 // COPYRIGHT BELONGS TO THE AUTHOR OF THIS CODE
 //
@@ -20,8 +20,8 @@
 // CONDITIONS.
 //
 
-#ifndef CANNY_EDGE_DETECTION_H_
-#define CANNY_EDGE_DETECTION_H_
+#ifndef EDGE_DETECTION_H_
+#define EDGE_DETECTION_H_
 
 ///////////////////////////////////////////
 //
@@ -62,16 +62,9 @@ using namespace cv;
 //
 ///////////////////////////////////////////
 
-
-Mat image_padding(const Mat& input_image, int offset);
-
-Mat image_depadding(const Mat& input_image, int offset);
-
 Mat get_image_gradient(const Mat& input_image, const Mat& horizontal_image, const Mat& vertical_image);
 
 Mat get_image_gradient_direction(const Mat& input_image, const Mat& horizontal_image, const Mat& vertical_image);
-
-void threshold_image(const Mat& input_image, Mat& thresholded_image, float threshold, bool inverse, bool adaptive);
 
 Mat non_maximum_suppression(const Mat& image_gradient,const Mat& gradient_direction, const Mat& horizontal_image, const Mat& vertical_image);
 
@@ -79,9 +72,11 @@ bool check_for_connected_strong_edges(int arr[],int size);
 
 Mat hysterisis(const Mat& input_image, int max_threshold, int min_threshold);
 
-void sobel_filter(const Mat& input_image, Mat& image_gradient, Mat& image_gradient_direction, Mat& horizontal_image, Mat& vertical_image);
+void sobel_edge_detection(const Mat& input_image, Mat& image_gradient, Mat& image_gradient_direction, Mat& horizontal_image, Mat& vertical_image);
+
+void prewitt_edge_detection(const Mat& input_image, Mat& image_gradient, Mat& image_gradient_direction, Mat& horizontal_image, Mat& vertical_image);
 
 Mat canny_edge_detection(const Mat& input_image, float threshold_l, float threshold_h);
 
-#endif // CANNY_EDGE_DETECTION_H_
+#endif // EDGE_DETECTION_H_
 
