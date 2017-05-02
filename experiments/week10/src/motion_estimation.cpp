@@ -5,6 +5,9 @@
 #define THRESHOLD 35000000000
 #define PI 3.1416
 
+#define SAD 0
+#define SSD 1
+
 using namespace cv;
 using namespace std;
 
@@ -21,17 +24,17 @@ class MotionField
 {
 	std::vector<MotionVector> motion_field;
         cv::Mat motion_field_image;
-	int rows;
-	int cols;
+	int matching_criteria;
 
   public:
-
+	int rows;
+	int cols;
 	MotionField(int num_rows, int num_cols, const Mat& previous_frame)
 	{
 		rows = num_rows;
 		cols = num_cols;
-		motion_field_image = previous_frame.clone();
 		motion_field.resize(rows*cols);
+		motion_field_image = previous_frame.clone();
 	}
 
 	void set(int row, int col, const MotionVector& motion_vector)
@@ -161,7 +164,7 @@ class MotionField
 
 };
 
-MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& currentFrame, int block_size = 8, int search_window_size = 32)
+MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& currentFrame,int matching_criteria = SAD, int block_size = 8, int search_window_size = 32)
 {
 
 	Mat previous_frame_resized, current_frame_resized;
@@ -258,7 +261,7 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 			if(stop_col_search_index > new_width)
 				stop_col_search_index = new_width;
 
-			float best_ssd = 10000;
+			float best_matching_function = 10000;
 
 			MotionVector best_motion_vector;
 
@@ -268,7 +271,7 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 				for(int n=start_col_search_index ; n < stop_col_search_index; n++)
 				{
 
-					float ssd = 0.0;
+					float matching_function = 0.0;
 
 					//Compute Sum of Squared Differences
 					for(int q=0; q < block_size; q++)
@@ -278,9 +281,12 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 		
 							int current_frame_pixel = currentFrameBlocks[j][i].at<uchar>(q,r);
 							int previous_frame_pixel = previous_grayscale_image.at<uchar>(m+q,r+n);
-							ssd += abs(current_frame_pixel - previous_frame_pixel);
-							
-							//ssd += sqrt(pow(current_frame_pixel-previous_frame_pixel,2));
+
+							if(matching_criteria == SAD)
+								matching_function += abs(current_frame_pixel - previous_frame_pixel);
+
+							else
+								matching_function += sqrt(pow(current_frame_pixel-previous_frame_pixel,2));
 
 							//cout<<"current index q="<<q<<", r= "<<r<<" , value="<<current_frame_pixel<<" previous index m+q="<<m+q<<" ,r+n="<<r+n<<" ,value ="<<previous_frame_pixel<<endl;
 							
@@ -294,9 +300,9 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 					//cout<<"block x = "<<center_x<<" , y="<<center_y<<" , ssd="<<ssd<<endl;
 
 
-					if(ssd<best_ssd)
+					if(matching_function<best_matching_function)
 					{
-						best_ssd = ssd;
+						best_matching_function = matching_function;
 						best_motion_vector.vel_y = center_x - center_x_search_window; 
 						best_motion_vector.vel_x = center_y - center_y_search_window;
 					}				
@@ -347,7 +353,7 @@ int main(int argc, char** argv )
         return -1;
      }
 
-   MotionField motion_field = estimateMotionByBlockMatching(image1,image2);
+   MotionField motion_field = estimateMotionByBlockMatching(image1,image2,SAD);
 
    Mat motion_estimated_image = motion_field.getImage();
 
