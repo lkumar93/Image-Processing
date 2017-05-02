@@ -25,14 +25,18 @@ class MotionField
 	std::vector<MotionVector> motion_field;
         cv::Mat motion_field_image;
 	int matching_criteria;
-
-  public:
 	int rows;
 	int cols;
+
+  public:
+	int height;
+	int width;
 	MotionField(int num_rows, int num_cols, const Mat& previous_frame)
 	{
 		rows = num_rows;
 		cols = num_cols;
+		height = num_rows;
+		width = num_cols;
 		motion_field.resize(rows*cols);
 		motion_field_image = previous_frame.clone();
 	}
@@ -261,7 +265,7 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 			if(stop_col_search_index > new_width)
 				stop_col_search_index = new_width;
 
-			float best_matching_function = 10000;
+			float lowest_error = 10000;
 
 			MotionVector best_motion_vector;
 
@@ -271,9 +275,9 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 				for(int n=start_col_search_index ; n < stop_col_search_index; n++)
 				{
 
-					float matching_function = 0.0;
+					float error = 0.0;
 
-					//Compute Sum of Squared Differences
+					//Compute either Sum of Squared Differences or Sum of Absolute Differences
 					for(int q=0; q < block_size; q++)
 					{
 						for(int r=0 ; r < block_size; r++)
@@ -283,10 +287,10 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 							int previous_frame_pixel = previous_grayscale_image.at<uchar>(m+q,r+n);
 
 							if(matching_criteria == SAD)
-								matching_function += abs(current_frame_pixel - previous_frame_pixel);
+								error += abs(current_frame_pixel - previous_frame_pixel);
 
 							else
-								matching_function += sqrt(pow(current_frame_pixel-previous_frame_pixel,2));
+								error += sqrt(pow(current_frame_pixel-previous_frame_pixel,2));
 
 							//cout<<"current index q="<<q<<", r= "<<r<<" , value="<<current_frame_pixel<<" previous index m+q="<<m+q<<" ,r+n="<<r+n<<" ,value ="<<previous_frame_pixel<<endl;
 							
@@ -300,9 +304,9 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 					//cout<<"block x = "<<center_x<<" , y="<<center_y<<" , ssd="<<ssd<<endl;
 
 
-					if(matching_function<best_matching_function)
+					if(error<lowest_error)
 					{
-						best_matching_function = matching_function;
+						lowest_error = error;
 						best_motion_vector.vel_y = center_x - center_x_search_window; 
 						best_motion_vector.vel_x = center_y - center_y_search_window;
 					}				
@@ -339,6 +343,172 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 
 }
 
+float mean_squared_error(const Mat& image_1, const Mat& image_2)
+{
+
+   int m1 = image_1.rows;
+   int n1 = image_1.cols;
+
+   int m2 = image_2.rows;
+   int n2 = image_2.cols;
+
+   if(m1 != m2 || n1 != n2)
+	resize(image_2,image_2,Size(n1,m1));
+
+   float mse = 0.0;
+
+    for(int j = 0; j < m1 ; j++)
+        for(int i = 0; i < n1; i++)
+        {
+            Vec3b rgb_value_1 = image_1.at<Vec3b>(j, i);
+	    Vec3b rgb_value_2 = image_2.at<Vec3b>(j, i);
+
+	    mse += abs(rgb_value_1[0]-rgb_value_2[0])^2 + abs(rgb_value_1[1]-rgb_value_2[1])^2 + abs(rgb_value_1[2]-rgb_value_2[2])^2 ;
+        }
+
+    return mse/(m1*n1*3.0);
+}
+
+
+Mat compensateMotion(Mat previous_frame, MotionField motion_field)
+{
+	Mat previous_frame_resized;
+	resize(previous_frame, previous_frame_resized, Size(motion_field.width,motion_field.height));
+
+	Mat motion_compensated_image =  Mat(motion_field.height, motion_field.width, CV_8UC3, Scalar(0,0,0));//Mat::zeros( motion_field.height, motion_field.width, CV_8UC3 )*-1;
+
+	   for(int j = 0; j < motion_field.height ; j++)
+	   {
+		for(int i = 0; i < motion_field.width; i++)
+		{
+			MotionVector motion_vector = motion_field.get(j,i);	
+			int predicted_row = j+motion_vector.vel_y;
+			int predicted_col = i+motion_vector.vel_x;
+
+			//cout<<"row ="<<predicted_row<<" ,col ="<<predicted_col<<endl;
+			if(predicted_row < motion_field.height && predicted_col<motion_field.width)
+				motion_compensated_image.at<Vec3b>(predicted_row, predicted_col) = previous_frame_resized.at<Vec3b>(j, i);
+		}
+	   }
+
+	  Vec3b unfilled_neighbour;
+	  unfilled_neighbour[0] = 0;
+	  unfilled_neighbour[1] = 0;
+	  unfilled_neighbour[2] = 0;
+
+	 // Bilinear Interpolation
+	   for(int j = 0; j < motion_field.height ; j++)
+	   {
+		for(int i = 0; i < motion_field.width; i++)
+		{
+			if(motion_compensated_image.at<Vec3b>(j, i) == unfilled_neighbour)
+			{
+				int count_r = i;
+				//get right most filled_neighbour
+				while( motion_compensated_image.at<Vec3b>(j, count_r) == unfilled_neighbour && count_r<motion_field.width )
+				{
+					count_r++;
+				}
+				int count_l = i;
+				//get left most filled_neighbour
+				while( motion_compensated_image.at<Vec3b>(j, count_l) == unfilled_neighbour && count_l >= 0 )
+				{
+					count_l--;
+				}
+
+				int count_b = j;
+				//get bottom most filled_neighbour
+				while( motion_compensated_image.at<Vec3b>(count_b, i) == unfilled_neighbour && count_b < motion_field.height )
+				{
+					count_b++;
+				}
+
+				int count_t = j;
+				//get top most filled_neighbour
+				while( motion_compensated_image.at<Vec3b>(count_t, i) == unfilled_neighbour && count_t >= 0 )
+				{
+					count_t--;
+				}
+
+				if(count_r >=motion_field.width)
+					count_r = motion_field.width;
+
+				if(count_l < 0)
+					count_l = 0;
+
+				if(count_b >=motion_field.height)
+					count_b = motion_field.height;
+
+				if(count_t < 0)
+					count_t = 0;
+
+			
+				float left_offset = i-count_l;
+				float right_offset = count_r-i;
+
+				float top_offset = j-count_t;
+				float bottom_offset = count_b-j;
+
+				float col_offset = left_offset+right_offset;
+				float row_offset = top_offset+bottom_offset;
+
+				left_offset = (1-left_offset/col_offset)/2.0;
+				right_offset = (1-right_offset/col_offset)/2.0;
+	
+				top_offset = (1-top_offset/row_offset)/2.0;
+				bottom_offset = (1-bottom_offset/row_offset)/2.0;
+
+				Vec3b top_pixel = motion_compensated_image.at<Vec3b>(count_t, i);
+				Vec3b bottom_pixel = motion_compensated_image.at<Vec3b>(count_b, i);
+
+				Vec3b right_pixel = motion_compensated_image.at<Vec3b>(j, count_r);
+				Vec3b left_pixel = motion_compensated_image.at<Vec3b>(j, count_l);
+
+				Vec3b interpolated_value;
+
+				if(left_pixel == unfilled_neighbour)
+					left_offset = 0;
+
+				if(right_pixel == unfilled_neighbour)
+					right_offset = 0;
+
+				if(top_pixel == unfilled_neighbour)
+					top_offset = 0;
+
+				if(bottom_pixel == unfilled_neighbour)
+					bottom_offset = 0;
+
+				col_offset = left_offset+right_offset;
+				row_offset = top_offset+bottom_offset;
+
+				left_offset = left_offset/(2*col_offset);
+				right_offset = right_offset/(2*col_offset);
+
+				top_offset = top_offset/(2*row_offset);
+				bottom_offset = bottom_offset/(2*row_offset);
+				
+	
+				interpolated_value[0] = left_offset*left_pixel[0] + right_offset*right_pixel[0] + top_offset*top_pixel[0]
+							+ bottom_offset*bottom_pixel[0];
+
+				interpolated_value[1] = left_offset*left_pixel[1] + right_offset*right_pixel[1] + top_offset*top_pixel[1]
+							+ bottom_offset*bottom_pixel[1];
+
+				interpolated_value[2] = left_offset*left_pixel[2] + right_offset*right_pixel[2] + top_offset*top_pixel[2]
+							+ bottom_offset*bottom_pixel[2];
+
+				motion_compensated_image.at<Vec3b>(j, i) = interpolated_value;
+
+				cout<<interpolated_value<<endl;
+			}
+			//motion_compensated_image.at<Vec3b>(j, i) = previous_frame_resized.at<Vec3b>(j, i);
+		}
+	   }
+
+	return motion_compensated_image;	
+
+}
+
 
 int main(int argc, char** argv )
 {
@@ -346,7 +516,6 @@ int main(int argc, char** argv )
 
     Mat image1 = imread( "../images/foreman/fm0001.tif", 1 );
     Mat image2 = imread( "../images/foreman/fm0002.tif", 1 );
-
     if ( !image1.data || !image2.data )
      {
         printf("No image data \n");
@@ -357,14 +526,23 @@ int main(int argc, char** argv )
 
    Mat motion_estimated_image = motion_field.getImage();
 
+   Mat motion_compensated_image = compensateMotion(image1,motion_field);
+
+   float mse = mean_squared_error(motion_compensated_image, image2);
+
+   cout<<"mse ="<<mse<<endl;
+
    //motion_field.print();
 
    namedWindow("Estimated Motion Field", WINDOW_AUTOSIZE);
    imshow("Estimated Motion Field", motion_estimated_image); 
    imwrite( "../results/motion_estimation/foreman/sad/estimated_motion_field.jpg", motion_estimated_image);
 
+   namedWindow("Motion Compensated Image", WINDOW_AUTOSIZE);
+   imshow("Motion Compensated Image", motion_compensated_image); 
+   imwrite( "../results/motion_compensation/foreman/sad/motion_compensated_image.jpg", motion_compensated_image);
+
     waitKey(0);
 
     return 0;
 }
-
