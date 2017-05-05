@@ -31,7 +31,7 @@ class MotionField
   public:
 	int height;
 	int width;
-	MotionField(int num_rows, int num_cols, const Mat& previous_frame)
+	MotionField(int num_rows = 0, int num_cols = 0, Mat previous_frame = Mat::zeros(1,1,CV_8UC3) )
 	{
 		rows = num_rows;
 		cols = num_cols;
@@ -168,6 +168,122 @@ class MotionField
 
 };
 
+void bilinearInterpolation(Mat image, int vacant_pixel_value=0)
+{
+
+	  Vec3b vacant_pixel;
+	  vacant_pixel[0] = vacant_pixel_value;
+	  vacant_pixel[1] = vacant_pixel_value;
+	  vacant_pixel[2] = vacant_pixel_value;
+
+	 // Bilinear Interpolation
+	   for(int j = 0; j < image.rows ; j++)
+	   {
+		for(int i = 0; i < image.cols; i++)
+		{
+			if(image.at<Vec3b>(j, i) == vacant_pixel)
+			{
+				int count_r = i;
+				//get right most filled_neighbour
+				while( image.at<Vec3b>(j, count_r) == vacant_pixel && count_r< image.cols)
+				{
+					count_r++;
+				}
+				int count_l = i;
+				//get left most filled_neighbour
+				while( image.at<Vec3b>(j, count_l) == vacant_pixel && count_l >= 0 )
+				{
+					count_l--;
+				}
+
+				int count_b = j;
+				//get bottom most filled_neighbour
+				while( image.at<Vec3b>(count_b, i) == vacant_pixel && count_b < image.rows )
+				{
+					count_b++;
+				}
+
+				int count_t = j;
+				//get top most filled_neighbour
+				while( image.at<Vec3b>(count_t, i) == vacant_pixel && count_t >= 0 )
+				{
+					count_t--;
+				}
+
+				if(count_r >=image.cols)
+					count_r = image.cols-1;
+
+				if(count_l < 0)
+					count_l = 0;
+
+				if(count_b >=image.rows)
+					count_b = image.rows-1;
+
+				if(count_t < 0)
+					count_t = 0;
+
+			
+				float left_offset = i-count_l;
+				float right_offset = count_r-i;
+
+				float top_offset = j-count_t;
+				float bottom_offset = count_b-j;
+
+				float col_offset = left_offset+right_offset;
+				float row_offset = top_offset+bottom_offset;
+
+				left_offset = (1-left_offset/col_offset)/2.0;
+				right_offset = (1-right_offset/col_offset)/2.0;
+	
+				top_offset = (1-top_offset/row_offset)/2.0;
+				bottom_offset = (1-bottom_offset/row_offset)/2.0;
+
+				Vec3b top_pixel = image.at<Vec3b>(count_t, i);
+				Vec3b bottom_pixel = image.at<Vec3b>(count_b, i);
+
+				Vec3b right_pixel = image.at<Vec3b>(j, count_r);
+				Vec3b left_pixel = image.at<Vec3b>(j, count_l);
+
+				Vec3b interpolated_value;
+
+				if(left_pixel == vacant_pixel)
+					left_offset = 0;
+
+				if(right_pixel == vacant_pixel)
+					right_offset = 0;
+
+				if(top_pixel == vacant_pixel)
+					top_offset = 0;
+
+				if(bottom_pixel == vacant_pixel)
+					bottom_offset = 0;
+
+				col_offset = left_offset+right_offset;
+				row_offset = top_offset+bottom_offset;
+
+				left_offset = left_offset/(2*col_offset);
+				right_offset = right_offset/(2*col_offset);
+
+				top_offset = top_offset/(2*row_offset);
+				bottom_offset = bottom_offset/(2*row_offset);
+				
+	
+				interpolated_value[0] = left_offset*left_pixel[0] + right_offset*right_pixel[0] + top_offset*top_pixel[0]
+								+ bottom_offset*bottom_pixel[0];
+
+				interpolated_value[1] = left_offset*left_pixel[1] + right_offset*right_pixel[1] + top_offset*top_pixel[1]
+							+ bottom_offset*bottom_pixel[1];
+
+				interpolated_value[2] = left_offset*left_pixel[2] + right_offset*right_pixel[2] + top_offset*top_pixel[2]
+							+ bottom_offset*bottom_pixel[2];
+
+				image.at<Vec3b>(j, i) = interpolated_value;	
+
+			}
+		}
+	   }
+}
+
 MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& currentFrame,int matching_criteria = SAD, int block_size = 8, int search_window_size = 32)
 {
 
@@ -178,8 +294,6 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 
 	float height_offset = (float)currentFrame.rows/(float)block_size;
 	int new_height = currentFrame.rows + (cvRound(height_offset) - height_offset)*block_size;
-
-	Mat previous_grayscale_image, current_grayscale_image;
 
 	if(new_width == currentFrame.cols && new_height == currentFrame.rows )
 	{
@@ -192,6 +306,10 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 		resize(previousFrame, previous_frame_resized, Size(new_height,new_width));
 		resize(currentFrame, current_frame_resized, Size(new_height,new_width));
 	}
+
+	Mat previous_grayscale_image = Mat::zeros( new_height, new_width, CV_8UC1 );
+	Mat current_grayscale_image = Mat::zeros( new_height, new_width, CV_8UC1 );
+
 
 	cvtColor( previous_frame_resized , previous_grayscale_image, CV_BGR2GRAY );
 	cvtColor( current_frame_resized , current_grayscale_image, CV_BGR2GRAY );
@@ -224,6 +342,19 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 
 			int stop_row_index = start_row_index +block_size;
 			int stop_col_index = start_col_index +block_size;
+
+			if(start_row_index < 0)
+				start_row_index = 0;
+
+			if(start_col_index < 0)
+				start_col_index = 0;
+
+			if(stop_row_index > new_height)
+				stop_row_index = new_height;
+
+			if(stop_col_index > new_width)
+				stop_col_index = new_width;
+			
 
 			int row = 0;
 			int col = 0;
@@ -284,13 +415,20 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 						{
 		
 							int current_frame_pixel = currentFrameBlocks[j][i].at<uchar>(q,r);
-							int previous_frame_pixel = previous_grayscale_image.at<uchar>(m+q,r+n);
 
-							if(matching_criteria == SAD)
-								error += abs(current_frame_pixel - previous_frame_pixel);
+							int row_index = (m+q);
+							int col_index = (r+n);
 
-							else
-								error += sqrt(pow(current_frame_pixel-previous_frame_pixel,2));
+//							if(row_index < new_height && row_index >= 0 && col_index < new_width && col_index >= 0)
+//							{
+								int previous_frame_pixel = previous_grayscale_image.at<uchar>(m+q,r+n);
+
+								if(matching_criteria == SAD)
+									error += abs(current_frame_pixel - previous_frame_pixel);
+
+								else
+									error += sqrt(pow(current_frame_pixel-previous_frame_pixel,2));
+							//]}
 
 							//cout<<"current index q="<<q<<", r= "<<r<<" , value="<<current_frame_pixel<<" previous index m+q="<<m+q<<" ,r+n="<<r+n<<" ,value ="<<previous_frame_pixel<<endl;
 							
@@ -302,7 +440,6 @@ MotionField estimateMotionByBlockMatching(const Mat& previousFrame, const Mat& c
 
 					//cout<<"search window x = "<<center_x_search_window<<" , y="<<center_y_search_window<<endl;
 					//cout<<"block x = "<<center_x<<" , y="<<center_y<<" , ssd="<<ssd<<endl;
-
 
 					if(error<lowest_error)
 					{
@@ -386,127 +523,36 @@ Mat compensateMotion(Mat previous_frame, MotionField motion_field)
 			int predicted_col = i+motion_vector.vel_x;
 
 			//cout<<"row ="<<predicted_row<<" ,col ="<<predicted_col<<endl;
-			if(predicted_row < motion_field.height && predicted_col<motion_field.width)
+			if(predicted_row < motion_field.height && predicted_col<motion_field.width && predicted_row >= 0 && predicted_col >= 0)
 				motion_compensated_image.at<Vec3b>(predicted_row, predicted_col) = previous_frame_resized.at<Vec3b>(j, i);
 		}
 	   }
 
-	  Vec3b unfilled_neighbour;
-	  unfilled_neighbour[0] = 0;
-	  unfilled_neighbour[1] = 0;
-	  unfilled_neighbour[2] = 0;
-
-	 // Bilinear Interpolation
-	   for(int j = 0; j < motion_field.height ; j++)
-	   {
-		for(int i = 0; i < motion_field.width; i++)
-		{
-			if(motion_compensated_image.at<Vec3b>(j, i) == unfilled_neighbour)
-			{
-				int count_r = i;
-				//get right most filled_neighbour
-				while( motion_compensated_image.at<Vec3b>(j, count_r) == unfilled_neighbour && count_r<motion_field.width )
-				{
-					count_r++;
-				}
-				int count_l = i;
-				//get left most filled_neighbour
-				while( motion_compensated_image.at<Vec3b>(j, count_l) == unfilled_neighbour && count_l >= 0 )
-				{
-					count_l--;
-				}
-
-				int count_b = j;
-				//get bottom most filled_neighbour
-				while( motion_compensated_image.at<Vec3b>(count_b, i) == unfilled_neighbour && count_b < motion_field.height )
-				{
-					count_b++;
-				}
-
-				int count_t = j;
-				//get top most filled_neighbour
-				while( motion_compensated_image.at<Vec3b>(count_t, i) == unfilled_neighbour && count_t >= 0 )
-				{
-					count_t--;
-				}
-
-				if(count_r >=motion_field.width)
-					count_r = motion_field.width;
-
-				if(count_l < 0)
-					count_l = 0;
-
-				if(count_b >=motion_field.height)
-					count_b = motion_field.height;
-
-				if(count_t < 0)
-					count_t = 0;
-
-			
-				float left_offset = i-count_l;
-				float right_offset = count_r-i;
-
-				float top_offset = j-count_t;
-				float bottom_offset = count_b-j;
-
-				float col_offset = left_offset+right_offset;
-				float row_offset = top_offset+bottom_offset;
-
-				left_offset = (1-left_offset/col_offset)/2.0;
-				right_offset = (1-right_offset/col_offset)/2.0;
-	
-				top_offset = (1-top_offset/row_offset)/2.0;
-				bottom_offset = (1-bottom_offset/row_offset)/2.0;
-
-				Vec3b top_pixel = motion_compensated_image.at<Vec3b>(count_t, i);
-				Vec3b bottom_pixel = motion_compensated_image.at<Vec3b>(count_b, i);
-
-				Vec3b right_pixel = motion_compensated_image.at<Vec3b>(j, count_r);
-				Vec3b left_pixel = motion_compensated_image.at<Vec3b>(j, count_l);
-
-				Vec3b interpolated_value;
-
-				if(left_pixel == unfilled_neighbour)
-					left_offset = 0;
-
-				if(right_pixel == unfilled_neighbour)
-					right_offset = 0;
-
-				if(top_pixel == unfilled_neighbour)
-					top_offset = 0;
-
-				if(bottom_pixel == unfilled_neighbour)
-					bottom_offset = 0;
-
-				col_offset = left_offset+right_offset;
-				row_offset = top_offset+bottom_offset;
-
-				left_offset = left_offset/(2*col_offset);
-				right_offset = right_offset/(2*col_offset);
-
-				top_offset = top_offset/(2*row_offset);
-				bottom_offset = bottom_offset/(2*row_offset);
-				
-	
-				interpolated_value[0] = left_offset*left_pixel[0] + right_offset*right_pixel[0] + top_offset*top_pixel[0]
-							+ bottom_offset*bottom_pixel[0];
-
-				interpolated_value[1] = left_offset*left_pixel[1] + right_offset*right_pixel[1] + top_offset*top_pixel[1]
-							+ bottom_offset*bottom_pixel[1];
-
-				interpolated_value[2] = left_offset*left_pixel[2] + right_offset*right_pixel[2] + top_offset*top_pixel[2]
-							+ bottom_offset*bottom_pixel[2];
-
-				motion_compensated_image.at<Vec3b>(j, i) = interpolated_value;
-
-				cout<<interpolated_value<<endl;
-			}
-			//motion_compensated_image.at<Vec3b>(j, i) = previous_frame_resized.at<Vec3b>(j, i);
-		}
-	   }
+ 	  bilinearInterpolation(motion_compensated_image,0);
 
 	return motion_compensated_image;	
+}
 
+Mat compute_prediction_error(const Mat& predicted_image, const Mat& target_image)
+{
+
+	Mat target_image_resized,prediction_error_image,predicted_image_grayscale;
+	resize(target_image, target_image_resized, predicted_image.size());
+	prediction_error_image = Mat::zeros(predicted_image.rows,predicted_image.cols,CV_8UC3);
+
+	for(int j = 0; j < predicted_image.rows ; j++)
+	{
+		for(int i = 0; i < predicted_image.cols; i++)
+		{
+			Vec3b target_image_pixel, predicted_image_pixel, prediction_error_pixel;
+			target_image_pixel = target_image_resized.at<Vec3b>(j,i);
+			predicted_image_pixel = predicted_image.at<Vec3b>(j,i);
+			prediction_error_image.at<Vec3b>(j,i) = target_image_pixel - predicted_image_pixel;
+
+		}
+	}
+	
+	return prediction_error_image;
 }
 
 
@@ -514,33 +560,266 @@ int main(int argc, char** argv )
 {
     Mat grayscale_image1, grayscale_image2;
 
-    Mat image1 = imread( "../images/foreman/fm0001.tif", 1 );
-    Mat image2 = imread( "../images/foreman/fm0002.tif", 1 );
-    if ( !image1.data || !image2.data )
-     {
-        printf("No image data \n");
-        return -1;
-     }
+    Mat foreman_images[10],football_images[3];
+    std::ostringstream foreman_source, football_source;
+    MotionField foreman_motion_fields[9],football_motion_fields[3];
+    Mat foreman_motion_estimated_images[9],football_motion_estimated_images[3];
+    Mat foreman_motion_compensated_images[9],football_motion_compensated_images[3];
+    Mat foreman_prediction_error_images[9],football_prediction_error_images[3];
+  
+    for(int i=0;i<10;i++)
+    {
+	foreman_source.str("");
+	foreman_source.clear();
+	foreman_source<<"../images/foreman/fm000"<<i+1<<".tif";
+	foreman_images[i] = imread(foreman_source.str(),1);
+	if(!foreman_images[i].data)
+	{
+		cout<<"No image data ="<<foreman_source.str();
+		break;
+	}
+	if(i>=1)
+	{
+		std::ostringstream foreman_estimation_result,foreman_compensation_result,foreman_prediction_result, mse_str;
 
-   MotionField motion_field = estimateMotionByBlockMatching(image1,image2,SAD);
+		foreman_estimation_result<<"../results/motion_estimation/foreman/sad/8X32/estimated_motion_field_"<<i<<"_8_32.jpg";
+		foreman_motion_fields[i-1]=estimateMotionByBlockMatching(foreman_images[i-1],foreman_images[i],SAD,8,32);
+		foreman_motion_estimated_images[i-1] = foreman_motion_fields[i-1].getImage();
+		imwrite(foreman_estimation_result.str(),foreman_motion_estimated_images[i-1]);
 
-   Mat motion_estimated_image = motion_field.getImage();
+		foreman_compensation_result<<"../results/motion_compensation/foreman/sad/8X32/motion_compensated_image_"<<i<<"_8_32.jpg";		
+		foreman_motion_compensated_images[i-1]=compensateMotion(foreman_images[i-1],foreman_motion_fields[i-1]);
+		foreman_prediction_error_images[i-1]=compute_prediction_error(foreman_motion_compensated_images[i-1],foreman_images[i]);
+		float mse = mean_squared_error(foreman_motion_compensated_images[i-1], foreman_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(foreman_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(foreman_compensation_result.str(),foreman_motion_compensated_images[i-1]);
 
-   Mat motion_compensated_image = compensateMotion(image1,motion_field);
+		foreman_prediction_result<<"../results/motion_compensation/foreman/sad/8X32/prediction_error_image_"<<i<<"_8_32.jpg";
 
-   float mse = mean_squared_error(motion_compensated_image, image2);
+		imwrite(foreman_prediction_result.str(),foreman_prediction_error_images[i-1]);
 
-   cout<<"mse ="<<mse<<endl;
+		foreman_estimation_result.str("");
+		foreman_estimation_result.clear();
+		
+		foreman_compensation_result.str("");
+		foreman_compensation_result.clear();
 
-   //motion_field.print();
+		foreman_prediction_result.str("");
+		foreman_prediction_result.clear();
 
-   namedWindow("Estimated Motion Field", WINDOW_AUTOSIZE);
-   imshow("Estimated Motion Field", motion_estimated_image); 
-   imwrite( "../results/motion_estimation/foreman/sad/estimated_motion_field.jpg", motion_estimated_image);
+		mse_str.str("");
+		mse_str.clear();
 
-   namedWindow("Motion Compensated Image", WINDOW_AUTOSIZE);
-   imshow("Motion Compensated Image", motion_compensated_image); 
-   imwrite( "../results/motion_compensation/foreman/sad/motion_compensated_image.jpg", motion_compensated_image);
+		foreman_estimation_result<<"../results/motion_estimation/foreman/sad/16X64/estimated_motion_field_"<<i<<"_16_64.jpg";
+		foreman_motion_fields[i-1]=estimateMotionByBlockMatching(foreman_images[i-1],foreman_images[i],SAD,16,64);
+		foreman_motion_estimated_images[i-1] = foreman_motion_fields[i-1].getImage();
+		imwrite(foreman_estimation_result.str(),foreman_motion_estimated_images[i-1]);
+
+		foreman_compensation_result<<"../results/motion_compensation/foreman/sad/16X64/motion_compensated_image_"<<i<<"_16_64.jpg";
+		foreman_motion_compensated_images[i-1]=compensateMotion(foreman_images[i-1],foreman_motion_fields[i-1]);
+		foreman_prediction_error_images[i-1]=compute_prediction_error(foreman_motion_compensated_images[i-1],foreman_images[i]);
+		mse = mean_squared_error(foreman_motion_compensated_images[i-1], foreman_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(foreman_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(foreman_compensation_result.str(),foreman_motion_compensated_images[i-1]);
+
+		foreman_prediction_result<<"../results/motion_compensation/foreman/sad/16X64/prediction_error_image_"<<i<<"_16_64.jpg";
+
+		imwrite(foreman_prediction_result.str(),foreman_prediction_error_images[i-1]);
+
+		foreman_estimation_result.str("");
+		foreman_estimation_result.clear();
+		
+		foreman_compensation_result.str("");
+		foreman_compensation_result.clear();
+
+		foreman_prediction_result.str("");
+		foreman_prediction_result.clear();
+
+		mse_str.str("");
+		mse_str.clear();
+
+		foreman_estimation_result<<"../results/motion_estimation/foreman/ssd/8X32/estimated_motion_field_"<<i<<"_8_32.jpg";
+		foreman_motion_fields[i-1]=estimateMotionByBlockMatching(foreman_images[i-1],foreman_images[i],SSD,8,32);
+		foreman_motion_estimated_images[i-1] = foreman_motion_fields[i-1].getImage();
+		imwrite(foreman_estimation_result.str(),foreman_motion_estimated_images[i-1]);
+
+		foreman_compensation_result<<"../results/motion_compensation/foreman/ssd/8X32/motion_compensated_image_"<<i<<"_8_32.jpg";
+		foreman_motion_compensated_images[i-1]=compensateMotion(foreman_images[i-1],foreman_motion_fields[i-1]);
+		foreman_prediction_error_images[i-1]=compute_prediction_error(foreman_motion_compensated_images[i-1],foreman_images[i]);
+		mse = mean_squared_error(foreman_motion_compensated_images[i-1], foreman_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(foreman_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(foreman_compensation_result.str(),foreman_motion_compensated_images[i-1]);
+
+		foreman_prediction_result<<"../results/motion_compensation/foreman/ssd/8X32/prediction_error_image_"<<i<<"_8_32.jpg";
+
+		imwrite(foreman_prediction_result.str(),foreman_prediction_error_images[i-1]);
+
+		foreman_estimation_result.str("");
+		foreman_estimation_result.clear();
+		
+		foreman_compensation_result.str("");
+		foreman_compensation_result.clear();
+
+		foreman_prediction_result.str("");
+		foreman_prediction_result.clear();
+
+		mse_str.str("");
+		mse_str.clear();
+
+		foreman_estimation_result<<"../results/motion_estimation/foreman/ssd/16X64/estimated_motion_field_"<<i<<"_16_64.jpg";
+		foreman_motion_fields[i-1]=estimateMotionByBlockMatching(foreman_images[i-1],foreman_images[i],SSD,16,64);
+		foreman_motion_estimated_images[i-1] = foreman_motion_fields[i-1].getImage();
+		imwrite(foreman_estimation_result.str(),foreman_motion_estimated_images[i-1]);
+
+		foreman_compensation_result<<"../results/motion_compensation/foreman/ssd/16X64/motion_compensated_image_"<<i<<"_16_64.jpg";
+		foreman_motion_compensated_images[i-1]=compensateMotion(foreman_images[i-1],foreman_motion_fields[i-1]);
+		foreman_prediction_error_images[i-1]=compute_prediction_error(foreman_motion_compensated_images[i-1],foreman_images[i]);
+		mse = mean_squared_error(foreman_motion_compensated_images[i-1], foreman_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(foreman_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(foreman_compensation_result.str(),foreman_motion_compensated_images[i-1]);
+
+		foreman_prediction_result<<"../results/motion_compensation/foreman/ssd/16X64/prediction_error_image_"<<i<<"_16_64.jpg";
+
+		imwrite(foreman_prediction_result.str(),foreman_prediction_error_images[i-1]);
+
+
+
+	}
+    }
+
+ for(int i=0;i<3;i++)
+    {
+	football_source.str("");
+	football_source.clear();
+	football_source<<"../images/football/football_qcif_"<<i+1<<".bmp";
+	football_images[i] = imread(football_source.str(),1);
+	if(!football_images[i].data)
+	{
+		cout<<"No image data ="<<football_source.str();
+		break;
+	}
+	if(i>=1)
+	{
+		std::ostringstream football_estimation_result,football_compensation_result,football_prediction_result, mse_str;
+
+		football_estimation_result<<"../results/motion_estimation/football/sad/8X32/estimated_motion_field_"<<i<<"_8_32.jpg";
+		football_motion_fields[i-1]=estimateMotionByBlockMatching(football_images[i-1],football_images[i],SAD,8,32);
+		football_motion_estimated_images[i-1] = football_motion_fields[i-1].getImage();
+		imwrite(football_estimation_result.str(),football_motion_estimated_images[i-1]);
+
+		football_compensation_result<<"../results/motion_compensation/football/sad/8X32/motion_compensated_image_"<<i<<"_8_32.jpg";		
+		football_motion_compensated_images[i-1]=compensateMotion(football_images[i-1],football_motion_fields[i-1]);
+		football_prediction_error_images[i-1]=compute_prediction_error(football_motion_compensated_images[i-1],football_images[i]);
+		float mse = mean_squared_error(football_motion_compensated_images[i-1], football_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(football_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(football_compensation_result.str(),football_motion_compensated_images[i-1]);
+
+		football_prediction_result<<"../results/motion_compensation/football/sad/8X32/prediction_error_image_"<<i<<"_8_32.jpg";
+
+		imwrite(football_prediction_result.str(),football_prediction_error_images[i-1]);
+
+		football_estimation_result.str("");
+		football_estimation_result.clear();
+		
+		football_compensation_result.str("");
+		football_compensation_result.clear();
+
+		football_prediction_result.str("");
+		football_prediction_result.clear();
+
+		mse_str.str("");
+		mse_str.clear();
+
+		football_estimation_result<<"../results/motion_estimation/football/sad/16X64/estimated_motion_field_"<<i<<"_16_64.jpg";
+		football_motion_fields[i-1]=estimateMotionByBlockMatching(football_images[i-1],football_images[i],SAD,16,64);
+		football_motion_estimated_images[i-1] = football_motion_fields[i-1].getImage();
+		imwrite(football_estimation_result.str(),football_motion_estimated_images[i-1]);
+
+		football_compensation_result<<"../results/motion_compensation/football/sad/16X64/motion_compensated_image_"<<i<<"_16_64.jpg";
+		football_motion_compensated_images[i-1]=compensateMotion(football_images[i-1],football_motion_fields[i-1]);
+		football_prediction_error_images[i-1]=compute_prediction_error(football_motion_compensated_images[i-1],football_images[i]);
+		mse = mean_squared_error(football_motion_compensated_images[i-1], football_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(football_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(football_compensation_result.str(),football_motion_compensated_images[i-1]);
+
+		football_prediction_result<<"../results/motion_compensation/football/sad/16X64/prediction_error_image_"<<i<<"_16_64.jpg";
+
+		imwrite(football_prediction_result.str(),football_prediction_error_images[i-1]);
+
+		football_estimation_result.str("");
+		football_estimation_result.clear();
+		
+		football_compensation_result.str("");
+		football_compensation_result.clear();
+
+		football_prediction_result.str("");
+		football_prediction_result.clear();
+
+		mse_str.str("");
+		mse_str.clear();
+
+		football_estimation_result<<"../results/motion_estimation/football/ssd/8X32/estimated_motion_field_"<<i<<"_8_32.jpg";
+		football_motion_fields[i-1]=estimateMotionByBlockMatching(football_images[i-1],football_images[i],SSD,8,32);
+		football_motion_estimated_images[i-1] = football_motion_fields[i-1].getImage();
+		imwrite(football_estimation_result.str(),football_motion_estimated_images[i-1]);
+
+		football_compensation_result<<"../results/motion_compensation/football/ssd/8X32/motion_compensated_image_"<<i<<"_8_32.jpg";
+		football_motion_compensated_images[i-1]=compensateMotion(football_images[i-1],football_motion_fields[i-1]);
+		football_prediction_error_images[i-1]=compute_prediction_error(football_motion_compensated_images[i-1],football_images[i]);
+		mse = mean_squared_error(football_motion_compensated_images[i-1], football_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(football_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(football_compensation_result.str(),football_motion_compensated_images[i-1]);
+
+		football_prediction_result<<"../results/motion_compensation/football/ssd/8X32/prediction_error_image_"<<i<<"_8_32.jpg";
+
+		imwrite(football_prediction_result.str(),football_prediction_error_images[i-1]);
+
+		football_estimation_result.str("");
+		football_estimation_result.clear();
+		
+		football_compensation_result.str("");
+		football_compensation_result.clear();
+
+		football_prediction_result.str("");
+		football_prediction_result.clear();
+
+		mse_str.str("");
+		mse_str.clear();
+
+		football_estimation_result<<"../results/motion_estimation/football/ssd/16X64/estimated_motion_field_"<<i<<"_16_64.jpg";
+		football_motion_fields[i-1]=estimateMotionByBlockMatching(football_images[i-1],football_images[i],SSD,16,64);
+		football_motion_estimated_images[i-1] = football_motion_fields[i-1].getImage();
+		imwrite(football_estimation_result.str(),football_motion_estimated_images[i-1]);
+
+		football_compensation_result<<"../results/motion_compensation/football/ssd/16X64/motion_compensated_image_"<<i<<"_16_64.jpg";
+		football_motion_compensated_images[i-1]=compensateMotion(football_images[i-1],football_motion_fields[i-1]);
+		football_prediction_error_images[i-1]=compute_prediction_error(football_motion_compensated_images[i-1],football_images[i]);
+		mse = mean_squared_error(football_motion_compensated_images[i-1], football_images[i]);
+		mse_str<<"mse = "<<mse;
+	        putText(football_motion_compensated_images[i-1], mse_str.str(), cvPoint(20,20), 
+	        FONT_HERSHEY_COMPLEX_SMALL, 0.5, cvScalar(0,255,0), 1, CV_AA);
+		imwrite(football_compensation_result.str(),football_motion_compensated_images[i-1]);
+
+		football_prediction_result<<"../results/motion_compensation/football/ssd/16X64/prediction_error_image_"<<i<<"_16_64.jpg";
+
+		imwrite(football_prediction_result.str(),football_prediction_error_images[i-1]);
+
+	}
+    }
 
     waitKey(0);
 
