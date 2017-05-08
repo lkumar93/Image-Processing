@@ -275,8 +275,12 @@ void threshold_image(const Mat& input_image, Mat& thresholded_image, float thres
 
    if(image_type == CV_32F)
 	blurred_image = gaussian_filter(thresholded_image,5,1.4);
+   else if(image_type == CV_8UC3)
+	std::cout<<"Thresholding not available for non CV_8UC1 & CV_32F images"<<std::endl;
    else
    	blurred_image = gaussian_filter(input_image,11,1.8);
+
+
 
    if(blurred_image.type() != image_type)
   	 blurred_image.convertTo(blurred_image,image_type);
