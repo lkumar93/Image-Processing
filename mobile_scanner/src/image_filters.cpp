@@ -155,7 +155,7 @@ Mat convolve(const Mat& input_image, const Mat& kernel)
        }
 
   Mat depadded_image = image_depadding(convolved_image, offset);
-  
+ 
   return depadded_image;
 }
 
@@ -206,6 +206,9 @@ Mat bilateral_convolve(const Mat& input_image, const Mat& gaussian_kernel, float
        }
 
   Mat depadded_image = image_depadding(convolved_image, offset);
+
+//  if(depadded_image.type() != input_image.type())
+//	depadded_image.convertTo(depadded_image,input_image.type());
   
   return depadded_image;
 }
@@ -244,7 +247,10 @@ Mat gaussian_filter(const Mat& input_image, int kernel_size, float sigma)
 	    kernel.at<float>(j,i) = kernel.at<float>(j,i)/value ;
        }
 
-   Mat filtered_image = convolve(input_image, kernel);
+   Mat filtered_image = convolve(input_image, kernel); 
+
+  if(filtered_image.type() != input_image.type())
+	filtered_image.convertTo(filtered_image,input_image.type());
 
    return filtered_image;
 }
@@ -261,7 +267,10 @@ Mat mean_filter(const Mat& input_image, int kernel_size)
        }
 
 
-   Mat filtered_image = convolve(input_image, kernel);  
+   Mat filtered_image = convolve(input_image, kernel);
+
+  if(filtered_image.type() != input_image.type())
+	filtered_image.convertTo(filtered_image,input_image.type());  
 
    return filtered_image;
 }
@@ -337,6 +346,9 @@ Mat morphological_filter(const Mat& input_image, int kernel_size, bool max, bool
        }
 
   Mat depadded_image = image_depadding(filtered_image, offset);
+
+  if(depadded_image.type() != input_image.type())
+	depadded_image.convertTo(depadded_image,input_image.type());
   
   return depadded_image;
 
@@ -396,6 +408,9 @@ Mat median_filter(const Mat& input_image, int kernel_size)
        }
 
   Mat depadded_image = image_depadding(filtered_image, offset);
+
+  if(depadded_image.type() != input_image.type())
+	depadded_image.convertTo(depadded_image,input_image.type());
   
   return depadded_image;
 
@@ -423,6 +438,9 @@ Mat bilateral_filter(const Mat& input_image, int kernel_size, float sigma_g, flo
        }
 
    Mat filtered_image = bilateral_convolve(input_image, kernel, sigma_r);
+
+  if(filtered_image.type() != input_image.type())
+	filtered_image.convertTo(filtered_image,input_image.type());  
 
    return filtered_image;
 
