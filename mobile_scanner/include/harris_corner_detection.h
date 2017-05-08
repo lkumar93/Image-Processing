@@ -66,6 +66,10 @@ struct IndexT
 	int row;
 
 	float distance(int j, int i);
+
+	bool operator!=(const IndexT& rhs);
+
+	bool operator==(const IndexT& rhs);
 };
 
 struct CornerT
@@ -76,7 +80,7 @@ struct CornerT
 
 
 
-CornerT harris_corner_detection(const Mat& input_image);
+CornerT harris_corner_detection(const Mat& input_image, float threshold=-0.25,int iterations = 10,float step_size = 0.02, int min_corners_num = 0);
 
 
 #endif // HARRIS_CORNER_DETECTION_H_

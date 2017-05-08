@@ -42,7 +42,23 @@ float IndexT::distance(int j, int i)
 	return sqrt(pow((row-j),2)+pow((col-i),2));
 }
 
-CornerT harris_corner_detection(const Mat& input_image)
+bool IndexT::operator!=(const IndexT& rhs)
+{
+	if(this->row != rhs.row && this->col != rhs.col)
+		return true;
+	else
+		return false;
+}
+
+bool IndexT::operator==(const IndexT& rhs)
+{
+	if(this->row == rhs.row && this->col == rhs.col)
+		return true;
+	else
+		return false;
+}
+
+CornerT harris_corner_detection(const Mat& input_image, float threshold, int iterations,float step_size, int min_corners_num)
 {
 
    Mat horizontal_kernel = Mat(3, 3, CV_32F, 0.0);
@@ -113,74 +129,127 @@ CornerT harris_corner_detection(const Mat& input_image)
    int offset = (size+1)/2 - 1;
 
     normalize(harris_response, harris_response, 1,0,NORM_MINMAX);
-    threshold_image(harris_response, corners, -0.25, false, true);
-   //threshold_image(harris_response, corners, -1000000, false, true);
 
-   if(corners.type() != CV_8UC1)
-   	corners.convertTo(corners,CV_8UC1);
+   std::vector<IndexT> best_corner_indices;
 
-//   for(int j = 0; j < horizontal_image.rows ; j++)
-//      for(int i = 0; i < horizontal_image.cols ; i++)
-//      {
-//	   if( harris_response.at<float>(j,i)  > THRESHOLD)
-//		corners.at<uchar>(j,i) = 255;
-//				
-//      }
+   if(min_corners_num == 0)
+   { 
+	   threshold_image(harris_response, corners, threshold, false, true);
 
-//    for(int j = 0; j < horizontal_image.rows ; j++)
-//      for(int i = 0; i < horizontal_image.cols ; i++)
-//      {
+	   if(corners.type() != CV_8UC1)
+	   	corners.convertTo(corners,CV_8UC1);
 
-//	   int max = 0;
-//	   for(int m = 0; m < size ; m++)
-//		for(int n = 0; n < size; n++)
-//		{
-//		    int row = j+m-offset;
-//		    int col = i+n-offset;
-//		
-//		    if ( corners.at<uchar>(row,col) > max && j!=row && i!=col )
-//			max = corners.at<uchar>(row,col);
-//		}
+	   std::vector<IndexT> corner_indices;
 
-//	   if( corners.at<uchar>(j,i)  > max)
-//		corners.at<uchar>(j,i) = 255;
+	   for(int j = 0; j < horizontal_image.rows ; j++)
+	      for(int i = 0; i < horizontal_image.cols ; i++)
+	      {
+		   IndexT current_index;
+		   current_index.row = j;
+		   current_index.col = i;
 
+		   if( corners.at<uchar>(j,i)  > 200)
+			if(corner_indices.empty())
+				corner_indices.push_back(current_index);
+			else
+			{
+				 bool corner_neighbor = false;
+				 for (std::vector<IndexT>::iterator it = corner_indices.begin() ; it != corner_indices.end(); ++it)
+				 {
+					if(it->distance(j,i) < DISTANCE_THRESHOLD)
+						corner_neighbor = true;
+				 }	
 
-//	}
+				 if(!corner_neighbor)
+					corner_indices.push_back(current_index);			
+			}			
+	      }
 
-   //Mat dilated_image =  morphological_filter(corners,3,false,true);
+	  best_corner_indices = corner_indices;
+   }
 
-   std::vector<IndexT> corner_indices;
+   else
+   {
 
-   for(int j = 0; j < horizontal_image.rows ; j++)
-      for(int i = 0; i < horizontal_image.cols ; i++)
-      {
-	   IndexT current_index;
-           current_index.row = j;
-	   current_index.col = i;
+	int min_corners = 10000;
 
-	   if( corners.at<uchar>(j,i)  > 200)
-		if(corner_indices.empty())
-			corner_indices.push_back(current_index);
-		else
+	int count = 0;
+	
+	float local_threshold = threshold - ( step_size*iterations/2.0);
+
+	int corner_size = min_corners;
+
+	while(count < iterations)
+	{
+
+	   corners = Mat::zeros(horizontal_image.rows, horizontal_image.cols, CV_8UC1 );
+
+	   threshold_image(harris_response, corners, local_threshold, false, true);
+
+	   if(corners.type() != CV_8UC1)
+	   	corners.convertTo(corners,CV_8UC1);
+
+	   std::vector<IndexT> corner_indices;
+
+	   for(int j = 0; j < horizontal_image.rows ; j++)
+	      for(int i = 0; i < horizontal_image.cols ; i++)
+	      {
+		   IndexT current_index;
+		   current_index.row = j;
+		   current_index.col = i;
+
+		   if( corners.at<uchar>(j,i)  > 200)
+			if(corner_indices.empty())
+				corner_indices.push_back(current_index);
+			else
+			{
+				 bool corner_neighbor = false;
+				 for (std::vector<IndexT>::iterator it = corner_indices.begin() ; it != corner_indices.end(); ++it)
+				 {
+					if(it->distance(j,i) < DISTANCE_THRESHOLD)
+						corner_neighbor = true;
+				 }	
+
+				 if(!corner_neighbor)
+					corner_indices.push_back(current_index);			
+			}			
+	      }
+	
+	   if(corner_indices.size()<min_corners && corner_indices.size() >= min_corners_num )
+	   {
+		best_corner_indices = corner_indices;
+		min_corners = corner_indices.size();
+
+		if(corner_indices.size() == min_corners_num)
 		{
-			 bool corner_neighbor = false;
-			 for (std::vector<IndexT>::iterator it = corner_indices.begin() ; it != corner_indices.end(); ++it)
-			 {
-				if(it->distance(j,i) < DISTANCE_THRESHOLD)
-					corner_neighbor = true;
-			 }	
+			break;
+		}
 
-			 if(!corner_neighbor)
-				corner_indices.push_back(current_index);			
-		}			
-      }
+	   }
 
-    
 
-    for (std::vector<IndexT>::iterator it = corner_indices.begin() ; it != corner_indices.end(); ++it)
+
+	   count++;
+
+//	   if(corner_size-corner_indices.size() >= 0.0)
+//	  	 local_threshold-=step_size;
+
+//	   else
+		local_threshold+=step_size;
+
+	   std::cout<<"Iteration = "<<count<< " ,num corners = "<<corner_indices.size()<<" ,local threshold ="<< local_threshold<<endl;
+
+	   corner_size = corner_indices.size();
+
+	} 
+    }
+
+
+    cout<<"HARRIS CORNER DETECTION"<<endl;
+
+    for (std::vector<IndexT>::iterator it = best_corner_indices.begin() ; it != best_corner_indices.end(); ++it)
     {
-	cout<<"index row = "<<it->row<<" , col="<<it->col<<endl;
+	cout<<"corner at row = "<<it->row<<" , col="<<it->col<<endl;
 	corners2.at<uchar>(it->row,it->col) = 255;
 	
     }	
@@ -199,7 +268,7 @@ CornerT harris_corner_detection(const Mat& input_image)
 
 
    CornerT CornerData;
-   CornerData.corner_indices = corner_indices;
+   CornerData.corner_indices = best_corner_indices;
    CornerData.corner_image = image_with_corners;
    return CornerData; 
 }
