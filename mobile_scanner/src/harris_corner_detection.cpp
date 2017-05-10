@@ -172,6 +172,8 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
    {
 
 	int min_corners = 10000;
+	
+	float max_area = 0.0;
 
 	int count = 0;
 	
@@ -214,17 +216,48 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
 					corner_indices.push_back(current_index);			
 			}			
 	      }
-	
-	   if(corner_indices.size()<min_corners && corner_indices.size() >= min_corners_num )
-	   {
-		best_corner_indices = corner_indices;
-		min_corners = corner_indices.size();
 
-		if(corner_indices.size() == min_corners_num)
+
+	   std::cout<<"Iteration = "<<count<< " ,num corners = "<<corner_indices.size()<<" ,local threshold ="<< local_threshold<<endl;
+	
+	   if(corner_indices.size()<=min_corners )
+	   {
+
+		if(corner_indices.size() >= min_corners_num )
 		{
-			break;
+
+			if(corner_indices.size() == min_corners_num)
+			{
+				float width = abs(corner_indices[0].row -corner_indices[1].row) + abs(corner_indices[0].col -corner_indices[1].col);
+				float height = abs(corner_indices[0].row -corner_indices[2].row) + abs(corner_indices[0].col -corner_indices[2].col);
+				float area = width * height;
+				if(area > max_area)
+				{
+					max_area = area;
+					best_corner_indices = corner_indices;
+					min_corners = corner_indices.size();				
+				}
+			
+			}
+			else
+			{
+				if(corner_indices.size() <= min_corners && corner_indices.size() >= min_corners_num)
+				{
+					best_corner_indices = corner_indices;
+					min_corners = corner_indices.size();
+				}
+				else
+				{
+					break;
+				}
+
+			}
 		}
 
+	   }
+	   else
+	   {
+		break;
 	   }
 
 
@@ -237,7 +270,6 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
 //	   else
 		local_threshold+=step_size;
 
-	   std::cout<<"Iteration = "<<count<< " ,num corners = "<<corner_indices.size()<<" ,local threshold ="<< local_threshold<<endl;
 
 	   corner_size = corner_indices.size();
 
