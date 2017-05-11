@@ -54,7 +54,7 @@ using namespace std;
 ///////////////////////////////////////////
 
 
-Mat get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPoint> keypoints2, std::vector<DMatch> matches, int iterations = 1000, int threshold = 2)
+Mat get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPoint> keypoints2, std::vector<DMatch> matches, int iterations = 1000, float threshold = 1.75)
 {
 
   std::vector<int> num_vector;
@@ -448,6 +448,82 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
    return warped_image;
 }
 
+Mat background_subtraction(Mat image1, Mat image2)
+{
+	Mat thresholded_image1,thresholded_image2, subtracted_image1,subtracted_image2;
+	Mat improved_image1 = sharpen(gaussian_filter(convert_to_grayscale(image1),5, 1.4),5,1);
+	Mat improved_image2 = sharpen(gaussian_filter(convert_to_grayscale(image2),4, 1.4),5,1) ;
+	threshold_image(improved_image1,thresholded_image1, 5, false, true);
+	threshold_image(improved_image2,thresholded_image2, 6, false, true);
+
+	subtracted_image1 = Mat::zeros(image1.rows,image1.cols,CV_8UC1);
+	subtracted_image2 = Mat::zeros(image1.rows,image1.cols,CV_8UC1);
+
+	for(int j = 0; j < image1.rows ; j++)
+		for(int i = 0; i < image1.cols; i++)
+		{
+
+			if(thresholded_image1.at<uchar>(j,i) == thresholded_image2.at<uchar>(j,i) && thresholded_image1.at<uchar>(j,i) == 0)
+			{
+				subtracted_image1.at<uchar>(j,i) = 255;
+			cout<<" Img 1 = "<<(int)thresholded_image1.at<uchar>(j,i)<<" ,Img 2 = "<<(int)thresholded_image2.at<uchar>(j,i)<<endl;
+			}
+			else
+				subtracted_image1.at<uchar>(j,i) = 0;
+
+//			if(subtracted_image1.at<uchar>(j,i) == thresholded_image2.at<uchar>(j,i) && thresholded_image2.at<uchar>(j,i) == 0 )
+//				subtracted_image2.at<uchar>(j,i) = 0;
+//			else
+//				subtracted_image2.at<uchar>(j,i) = 255;
+			
+			//subtracted_image2.at<uchar>(j,i) = abs(subtracted_image1.at<uchar>(j,i)-255+thresholded_image1.at<uchar>(j,i));
+		}	
+
+        subtracted_image1 =  morphological_filter( subtracted_image1, 9, true, false); //median_filter( subtracted_image2, 3);	
+        subtracted_image1 =  morphological_filter( subtracted_image1, 3, true, false); 
+
+	for(int j = 0; j < image1.rows ; j++)
+		for(int i = 0; i < image1.cols; i++)
+		{
+			if(subtracted_image1.at<uchar>(j,i) == thresholded_image2.at<uchar>(j,i) && thresholded_image2.at<uchar>(j,i) == 0 )
+				subtracted_image2.at<uchar>(j,i) = 0;
+			else
+				subtracted_image2.at<uchar>(j,i) = 255;			
+		}
+
+
+        //subtracted_image2 =  morphological_filter( subtracted_image2, 5, true, false);//= median_filter( subtracted_image2, 3);
+
+	imshow("Matches result1",thresholded_image1);
+	imshow("Matches result2",thresholded_image2);
+	return subtracted_image2;
+}
+
+
+Mat background_addition(const Mat& image1, const Mat& image2, const Mat& foreground)
+{
+    Mat restored_image = image1.clone();
+
+	for(int j = 0; j < image1.rows ; j++)
+		for(int i = 0; i < image1.cols; i++)
+		{
+			if(foreground.at<uchar>(j,i) == 0 )
+			{
+				if(image1.type() == CV_8UC3)
+					restored_image.at<Vec3b>(j,i) = image2.at<Vec3b>(j,i);
+				else
+					restored_image.at<uchar>(j,i) = image2.at<uchar>(j,i);
+			}
+		}
+
+
+
+   return restored_image;
+
+
+
+}
+
 ///////////////////////////////////////////
 //
 //	MAIN FUNCTION
@@ -456,8 +532,8 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 int main(int argc, char** argv )
 {
     Mat image1, image2;
-    image1 = imread( "../images/receipt10.jpg", 1 );
-    image2 = imread( "../images/registration_receipt3.jpg", 1);
+    image2 = imread( "../images/receipt10.jpg", 1 );
+    image1 = imread( "../images/registration_receipt3.jpg", 1);
 
     if ( !image1.data || !image2.data)
     {
@@ -467,8 +543,8 @@ int main(int argc, char** argv )
 
     //cv::SiftFeatureDetector detector;
 
-    Mat receipt1 = scan_document(image1);
-    Mat receipt2 = scan_document(image2,true);
+    Mat receipt2 = scan_document(image2);
+    Mat receipt1 = scan_document(image1,true);
 
     Ptr<FeatureDetector> detector = ORB::create();
     Ptr<DescriptorExtractor> extractor = ORB::create();
@@ -548,8 +624,13 @@ int main(int argc, char** argv )
 
    warp_image(receipt2,output_image,best_perspective_transform);
 
+   bilinearInterpolation(output_image);
+
     Mat output1 = receipt1.clone();
     Mat output2 = output_image.clone();
+
+    Mat foreground = background_subtraction(output1, output2);
+    Mat restored_image = background_addition(output1,output2,foreground);
     for(int i=0; i<better_matches.size(); i++)
     {
 	int col1 = keypoints1[better_matches[i].queryIdx].pt.x;
@@ -567,8 +648,10 @@ int main(int argc, char** argv )
 
 //    drawMatches(receipt1, keypoints1, output_image, keypoints1, better_matches, output);
 //    imshow("Output",output);
-    imshow("Matches result1",output1);
-    imshow("Matches result2",output2);
+//    imshow("Matches result1",output1);
+//    imshow("Matches result2",output2);
+    imshow("Background Subtraction",foreground);
+    imshow("Restored Image",restored_image);
     
     waitKey(0);
 
