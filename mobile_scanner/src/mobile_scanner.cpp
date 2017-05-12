@@ -47,6 +47,12 @@
 using namespace cv;
 using namespace std;
 
+struct RansacT
+{
+	Mat best_perspective_transform;
+	std::vector<int> best_four_matches;
+};
+
 ///////////////////////////////////////////
 //
 //	FUNCTIONS
@@ -54,7 +60,7 @@ using namespace std;
 ///////////////////////////////////////////
 
 
-Mat get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPoint> keypoints2, std::vector<DMatch> matches, int iterations = 1000, float threshold = 1.75)
+RansacT get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPoint> keypoints2, std::vector<DMatch> matches, int iterations = 25000, float threshold = 5)
 {
 
   std::vector<int> num_vector;
@@ -130,7 +136,20 @@ Mat get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPoint>
 	count++;
   }
 
-  return best_perspective_transform;
+
+    RansacT data;
+    data.best_perspective_transform = best_perspective_transform ;
+    data.best_four_matches = best_index_vector;
+    
+
+   // show it on an image
+
+//    drawMatches(receipt1, keypoints1, output_image, keypoints1, better_matches, output);
+//    imshow("Output",output);
+//    imshow("Matches result1",output1);
+//    imshow("Matches result2",output2);
+
+  return data;
 }
 
 //Order the points as Top_Left, Top_Right, Bottom_Right, Bottom_Left
@@ -233,11 +252,9 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
 	     grayscale_image =  convert_to_grayscale(rgb_image_resized);
 
-//	     grayscale_image = equalized_image(grayscale_image);
-
 	     grayscale_image =	gaussian_filter(grayscale_image,3, 1.4);
 
-	     equalized_image = grayscale_image; // equalize_image(grayscale_image);
+	     equalized_image = grayscale_image; 
 
 	     equalized_image = bilateral_filter(equalized_image, 5, 25, 15);
 
@@ -253,7 +270,6 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
     detected_edges =  morphological_filter( detected_edges, 5, true, false);
     detected_edges =  morphological_filter( detected_edges, 3, false, false);
-    //detected_edges = median_filter(detected_edges,3);
     detected_edges =  morphological_filter( detected_edges, 3, false, false);
     detected_edges =  morphological_filter( detected_edges, 7, true, false);
     detected_edges =  morphological_filter( detected_edges, 3, true, false);
@@ -331,6 +347,8 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
 	 order_points(corner_data.corner_indices, ordered_points);
 
+	 cout<<"Scaled Corner Points"<<endl;
+
 	 for(int i = 0 ; i<4 ; i++)
 	 {
 		cout<<"row = "<<ordered_points[i].row*scale_factor<<" , col="<<ordered_points[i].col*scale_factor<<endl;
@@ -371,35 +389,21 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
         
 	 Mat warped_grayscale_image;
 
-	 if(USE_OPENCV)   	
-	 {	 
-		  lambda = getPerspectiveTransform( input_rectangle, output_rectangle );
+	 Mat pt =  perspective_transform(input_rectangle, output_rectangle);
 
-		  warpPerspective(rgb_image_resized,warped_image,lambda,warped_image.size() );
+	 warp_image(rgb_image_resized, warped_image, pt);
 
-		  cvtColor(warped_image,warped_grayscale_image, CV_BGR2GRAY);
-	  }
+	 bilinearInterpolation(warped_image,vacant_pixel_value);
 
-	  else
-	  {
+	 warped_grayscale_image = convert_to_grayscale(warped_image);
 
-		   Mat pt =  perspective_transform(input_rectangle, output_rectangle);
+	 receipt = warped_grayscale_image;
 
-		   warp_image(rgb_image_resized, warped_image, pt);
+	 threshold_image(gaussian_filter(warped_grayscale_image,3, 1.4), receipt, 6.5, false, true);
 
-		   bilinearInterpolation(warped_image,vacant_pixel_value);
-
-  		   warped_grayscale_image = convert_to_grayscale(warped_image);
-			//warped_image.convertTo(warped_image, CV_8UC1);
-	   }
-
-	  receipt = warped_grayscale_image;
-
-	  threshold_image(gaussian_filter(warped_grayscale_image,3, 1.4), receipt, 6.5, false, true);
-
-  	  receipt =  morphological_filter( receipt, 3, false, false);
-  	  receipt =  morphological_filter( receipt, 3, true, false);
- 	  receipt =  morphological_filter( receipt, 3, false, false);
+  	 receipt =  morphological_filter( receipt, 3, false, false);
+  	 receipt =  morphological_filter( receipt, 3, true, false);
+ 	 receipt =  morphological_filter( receipt, 3, false, false);
 
 	  if(!image_registration)
 	  {
@@ -451,10 +455,18 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 Mat background_subtraction(Mat image1, Mat image2)
 {
 	Mat thresholded_image1,thresholded_image2, subtracted_image1,subtracted_image2;
-	Mat improved_image1 = sharpen(gaussian_filter(convert_to_grayscale(image1),5, 1.4),5,1);
-	Mat improved_image2 = sharpen(gaussian_filter(convert_to_grayscale(image2),4, 1.4),5,1) ;
+	Mat improved_image1 = sharpen(gaussian_filter(convert_to_grayscale(image1),5, 2),5,1);
+	Mat improved_image2 = sharpen(gaussian_filter(convert_to_grayscale(image2),5, 1.4),5,1) ;
+	//improved_image2 = canny_edge_detection(median_filter(improved_image2,3), THRESHOLD_RATIO_L, THRESHOLD_RATIO_H);
+    
 	threshold_image(improved_image1,thresholded_image1, 5, false, true);
-	threshold_image(improved_image2,thresholded_image2, 6, false, true);
+	threshold_image(improved_image2,thresholded_image2, 5, false, true);
+
+//	thresholded_image2 = morphological_filter( thresholded_image2, 3, false, false);
+//	thresholded_image2 = median_filter(thresholded_image2,7);
+//	thresholded_image2 = median_filter(thresholded_image2,7);
+//	thresholded_image2 = morphological_filter( thresholded_image2, 3, true, false);
+////	thresholded_image2 = median_filter(thresholded_image2,3);
 
 	subtracted_image1 = Mat::zeros(image1.rows,image1.cols,CV_8UC1);
 	subtracted_image2 = Mat::zeros(image1.rows,image1.cols,CV_8UC1);
@@ -466,7 +478,7 @@ Mat background_subtraction(Mat image1, Mat image2)
 			if(thresholded_image1.at<uchar>(j,i) == thresholded_image2.at<uchar>(j,i) && thresholded_image1.at<uchar>(j,i) == 0)
 			{
 				subtracted_image1.at<uchar>(j,i) = 255;
-			cout<<" Img 1 = "<<(int)thresholded_image1.at<uchar>(j,i)<<" ,Img 2 = "<<(int)thresholded_image2.at<uchar>(j,i)<<endl;
+			//cout<<" Img 1 = "<<(int)thresholded_image1.at<uchar>(j,i)<<" ,Img 2 = "<<(int)thresholded_image2.at<uchar>(j,i)<<endl;
 			}
 			else
 				subtracted_image1.at<uchar>(j,i) = 0;
@@ -479,8 +491,8 @@ Mat background_subtraction(Mat image1, Mat image2)
 			//subtracted_image2.at<uchar>(j,i) = abs(subtracted_image1.at<uchar>(j,i)-255+thresholded_image1.at<uchar>(j,i));
 		}	
 
-        subtracted_image1 =  morphological_filter( subtracted_image1, 9, true, false); //median_filter( subtracted_image2, 3);	
-        subtracted_image1 =  morphological_filter( subtracted_image1, 3, true, false); 
+        subtracted_image1 =  morphological_filter( subtracted_image1, 5, true, false); //median_filter( subtracted_image2, 3);	
+       // subtracted_image1 =  morphological_filter( subtracted_image1, 3, true, false); 
 
 	for(int j = 0; j < image1.rows ; j++)
 		for(int i = 0; i < image1.cols; i++)
@@ -496,6 +508,11 @@ Mat background_subtraction(Mat image1, Mat image2)
 
 	imshow("Matches result1",thresholded_image1);
 	imshow("Matches result2",thresholded_image2);
+	subtracted_image2 = morphological_filter( subtracted_image2, 3, false, false);
+//	subtracted_image2 = morphological_filter( subtracted_image2, 5, false, false);
+//	subtracted_image2 = morphological_filter( subtracted_image2, 5,true, false);
+	subtracted_image2 =  median_filter(subtracted_image2,5);
+
 	return subtracted_image2;
 }
 
@@ -504,8 +521,8 @@ Mat background_addition(const Mat& image1, const Mat& image2, const Mat& foregro
 {
     Mat restored_image = image1.clone();
 
-	for(int j = 0; j < image1.rows ; j++)
-		for(int i = 0; i < image1.cols; i++)
+	for(int j = 10; j < image1.rows-10 ; j++)
+		for(int i = 10; i < image1.cols-10; i++)
 		{
 			if(foreground.at<uchar>(j,i) == 0 )
 			{
@@ -520,47 +537,25 @@ Mat background_addition(const Mat& image1, const Mat& image2, const Mat& foregro
 
    return restored_image;
 
-
-
 }
 
-///////////////////////////////////////////
-//
-//	MAIN FUNCTION
-//
-///////////////////////////////////////////
-int main(int argc, char** argv )
+Mat image_matching(Mat reference_image, Mat scanned_image)
 {
-    Mat image1, image2;
-    image2 = imread( "../images/receipt10.jpg", 1 );
-    image1 = imread( "../images/registration_receipt3.jpg", 1);
 
-    if ( !image1.data || !image2.data)
-    {
-        printf("No image data \n");
-        return -1;
-    }
-
-    //cv::SiftFeatureDetector detector;
-
-    Mat receipt2 = scan_document(image2);
-    Mat receipt1 = scan_document(image1,true);
-
-    Ptr<FeatureDetector> detector = ORB::create();
+    Ptr<FeatureDetector> detector = ORB::create(5000);
     Ptr<DescriptorExtractor> extractor = ORB::create();
 
     vector<KeyPoint> keypoints1, keypoints2;
 
-    detector->detect(receipt1, keypoints1);
-    detector->detect(receipt2, keypoints2);
-
+    detector->detect(reference_image, keypoints1);
+    detector->detect(scanned_image, keypoints2);
 
     cout << "# keypoints of image1 :" << keypoints1.size() << endl;
     cout << "# keypoints of image2 :" << keypoints2.size() << endl;
 
     Mat descriptors1,descriptors2;
-    extractor->compute(receipt1,keypoints1,descriptors1);
-    extractor->compute(receipt2,keypoints2,descriptors2);
+    extractor->compute(reference_image, keypoints1,descriptors1);
+    extractor->compute(scanned_image, keypoints2,descriptors2);
 
     cout << "Descriptors size :" << descriptors1.cols << ":"<< descriptors1.rows << endl;
 
@@ -602,56 +597,116 @@ int main(int argc, char** argv )
 
    cout << "Better matches:" << better_matches.size() << endl;
 
+   RansacT data = get_best_perspective_transform(keypoints1, keypoints2, better_matches);
+   Mat best_perspective_transform = data.best_perspective_transform;
 
-//    Mat output1 = receipt1.clone();
-//    Mat output2 = receipt2.clone();
+   Mat output_image = Mat::zeros(reference_image.rows,reference_image.cols,CV_8UC3);
+
+   warp_image(scanned_image,output_image,best_perspective_transform);
+
+   bilinearInterpolation(output_image);
+
+//    Mat output1 = reference_image.clone();
+//    Mat output2 = output_image.clone();
+
 //    for(int i=0; i<better_matches.size(); i++)
 //    {
 //	int col1 = keypoints1[better_matches[i].queryIdx].pt.x;
 //	int row1 = keypoints1[better_matches[i].queryIdx].pt.y;
 
-//	int col2 = keypoints2[better_matches[i].trainIdx].pt.x;
-//	int row2 = keypoints2[better_matches[i].trainIdx].pt.y;
-
 //	circle( output1, Point( col1, row1), 10,  Scalar(0,255,0), 2, 8, 0 );
-//	circle( output2, Point( col2, row2), 10,  Scalar(0,255,0), 2, 8, 0 );
+//	circle( output2, Point( col1, row1), 10,  Scalar(0,255,0), 2, 8, 0 );
 
 //    }
 
-   Mat best_perspective_transform = get_best_perspective_transform(keypoints1, keypoints2, better_matches);
+    Mat output1 = reference_image.clone();
+    Mat output2 = scanned_image.clone();
 
-   Mat output_image = Mat::zeros(receipt1.rows,receipt1.cols,CV_8UC3);
-
-   warp_image(receipt2,output_image,best_perspective_transform);
-
-   bilinearInterpolation(output_image);
-
-    Mat output1 = receipt1.clone();
-    Mat output2 = output_image.clone();
-
-    Mat foreground = background_subtraction(output1, output2);
-    Mat restored_image = background_addition(output1,output2,foreground);
-    for(int i=0; i<better_matches.size(); i++)
+    for(int i=0; i<4; i++)
     {
-	int col1 = keypoints1[better_matches[i].queryIdx].pt.x;
-	int row1 = keypoints1[better_matches[i].queryIdx].pt.y;
+	int col1 = keypoints1[better_matches[data.best_four_matches[i]].queryIdx].pt.x;
+	int row1 = keypoints1[better_matches[data.best_four_matches[i]].queryIdx].pt.y;
+
+	int col2 = keypoints2[better_matches[data.best_four_matches[i]].trainIdx].pt.x;
+	int row2 = keypoints2[better_matches[data.best_four_matches[i]].trainIdx].pt.y;
 
 	circle( output1, Point( col1, row1), 10,  Scalar(0,255,0), 2, 8, 0 );
-	circle( output2, Point( col1, row1), 10,  Scalar(0,255,0), 2, 8, 0 );
+	circle( output2, Point( col2, row2), 10,  Scalar(0,255,0), 2, 8, 0 );
 
     }
 
-
-    Mat output;
 
    // show it on an image
 
 //    drawMatches(receipt1, keypoints1, output_image, keypoints1, better_matches, output);
 //    imshow("Output",output);
-//    imshow("Matches result1",output1);
-//    imshow("Matches result2",output2);
-    imshow("Background Subtraction",foreground);
-    imshow("Restored Image",restored_image);
+    imshow("Best Matches result1",output1);
+    imshow("Best Matches result2",output2);
+
+   return output_image;
+
+}
+
+///////////////////////////////////////////
+//
+//	MAIN FUNCTION
+//
+///////////////////////////////////////////
+int main(int argc, char** argv )
+{
+    Mat image1, image2;
+
+    int registration = 1;
+
+    if(argc>=2)
+   {
+	    try
+	    {
+		registration = atoi(argv[1]);
+	    }
+
+	   catch (Exception e)
+	   {
+		//do nothing
+	   }
+   }
+
+   
+    if(registration == 1)
+    {
+	    image2 = imread( "../images/receipt11.jpg", 1 );
+	    image1 = imread( "../images/registration_receipt3.jpg", 1);
+
+	    if ( !image1.data || !image2.data)
+	    {
+		printf("No image data \n");
+		return -1;
+	    }
+
+	    //cv::SiftFeatureDetector detector;
+
+	    Mat receipt2 = scan_document(image2, true);
+	    Mat receipt1 = scan_document(image1,true);
+
+	    Mat output_image = image_matching(receipt1,receipt2);
+
+	    Mat foreground = background_subtraction(receipt1, output_image);
+	    Mat output = background_addition(receipt1,output_image,foreground);
+
+	    Mat restored_image;
+	    threshold_image(convert_to_grayscale(output),restored_image, 6, false, true);
+
+	    imshow("Background Subtraction",foreground);
+	    imshow("Thresholded Restored Image",restored_image);
+	    imshow("Restored Image",output);
+    }
+    else
+    {
+
+	    image2 = imread( "../images/receipt10.jpg", 1 );
+	    scan_document(image2);
+
+     }
     
     waitKey(0);
 
