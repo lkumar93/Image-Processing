@@ -309,17 +309,17 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 	 {
 		cout<<"row = "<<ordered_points[i].row*scale_factor<<" , col="<<ordered_points[i].col*scale_factor<<endl;
 		circle( viz_corner, Point( ordered_points[i].col, ordered_points[i].row ), 10,  Scalar(0,255,0), 2, 8, 0 );
-		ordered_points[i].row = int(ordered_points[i].row*scale_factor);
-		ordered_points[i].col = int(ordered_points[i].col*scale_factor);
+		ordered_points[i].row = cvFloor(ordered_points[i].row*scale_factor);
+		ordered_points[i].col = cvFloor(ordered_points[i].col*scale_factor);
 	 }	
 
-	 int width1 = int(sqrt(pow(ordered_points[3].col - ordered_points[2].col,2) + pow(ordered_points[3].row - ordered_points[2].row,2)));
-	 int width2 = int(sqrt(pow(ordered_points[1].col - ordered_points[0].col,2) + pow(ordered_points[1].row - ordered_points[0].row,2)));
+	 int width1 = cvFloor(sqrt(pow(ordered_points[3].col - ordered_points[2].col,2) + pow(ordered_points[3].row - ordered_points[2].row,2)));
+	 int width2 = cvFloor(sqrt(pow(ordered_points[1].col - ordered_points[0].col,2) + pow(ordered_points[1].row - ordered_points[0].row,2)));
 
 	 int width = (width1 > width2) ? width1 : width2;
 
-	 int height1 = int(sqrt(pow(ordered_points[1].col - ordered_points[2].col,2) + pow(ordered_points[1].row - ordered_points[2].row,2)));
-	 int height2 = int(sqrt(pow(ordered_points[3].col - ordered_points[0].col,2) + pow(ordered_points[3].row - ordered_points[0].row,2)));
+	 int height1 = cvFloor(sqrt(pow(ordered_points[1].col - ordered_points[2].col,2) + pow(ordered_points[1].row - ordered_points[2].row,2)));
+	 int height2 = cvFloor(sqrt(pow(ordered_points[3].col - ordered_points[0].col,2) + pow(ordered_points[3].row - ordered_points[0].row,2)));
 
 	 int height = (height1 > height2) ? height1 : height2;
 
@@ -355,11 +355,11 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
 	 receipt = warped_grayscale_image;
 
-	 threshold_image(gaussian_filter(warped_grayscale_image,3, 1.4), receipt, 6.5, false, true);
+	 threshold_image(gaussian_filter(warped_grayscale_image,3, 1.4), receipt, 5, false, true);
 
-  	 receipt =  morphological_filter( receipt, 3, false, false);
-  	 receipt =  morphological_filter( receipt, 3, true, false);
- 	 receipt =  morphological_filter( receipt, 3, false, false);
+//  	 receipt =  morphological_filter( receipt, 3, false, false);
+//  	 receipt =  morphological_filter( receipt, 3, true, false);
+// 	 receipt =  morphological_filter( receipt, 3, false, false);
 
 	  if(!image_registration)
 	  {
@@ -609,8 +609,8 @@ int main(int argc, char** argv )
    
     if(registration == 1)
     {
-	    image2 = imread( "../images/receipt12.jpg", 1 );
-	    image1 = imread( "../images/registration_receipt4.jpg", 1);
+	    image2 = imread( "../images/image_registration/scanned_image.jpg", 1 );
+	    image1 = imread( "../images/image_registration/reference_image.jpg", 1);
 
 	    if ( !image1.data || !image2.data)
 	    {
@@ -644,13 +644,13 @@ int main(int argc, char** argv )
     else
     {
 
-	    image1 = imread( "../images/receipt10.jpg", 1 );
+	    image1 = imread( "../images/document_scan/scanned_image.jpg", 1 );
 	    if (!image1.data)
 	    {
 		printf("No image data \n");
 		return -1;
 	    }
-	    scan_document(image2);
+	    scan_document(image1);
 
      }
     

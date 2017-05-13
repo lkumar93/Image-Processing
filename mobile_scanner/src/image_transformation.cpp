@@ -162,10 +162,13 @@ void bilinearInterpolation(Mat image, int vacant_pixel_value)
 //			}
 //		   }
 
+
+
 		   for(int j = 0; j < image.rows ; j++)
 		   {
 			for(int i = 0; i < image.cols; i++)
 			{
+
 				if(image.at<Vec3b>(j, i) == vacant_pixel)
 				{
 					int count_r = i;
@@ -286,6 +289,8 @@ void bilinearInterpolation(Mat image, int vacant_pixel_value)
 								+ bottom_offset*bottom_pixel[2];
 
 					image.at<Vec3b>(j, i) = interpolated_value;
+
+
 
 				}
 			}
