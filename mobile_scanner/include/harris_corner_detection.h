@@ -42,7 +42,7 @@
 
 //#define THRESHOLD 1000000000//
 #define THRESHOLD 35000000000 //
-#define DISTANCE_THRESHOLD 10
+#define DISTANCE_THRESHOLD 30
 
 ///////////////////////////////////////////
 //
