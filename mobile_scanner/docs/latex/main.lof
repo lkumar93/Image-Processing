@@ -1,0 +1,41 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {english}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Flow Chart for Document Extraction\relax }}{2}{figure.caption.14}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Reference Image}}{3}{figure.caption.16}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Image Enhancement}}{4}{figure.caption.18}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Flow Chart for Canny Edge Detection\relax }}{5}{figure.caption.20}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Canny Edge Detection}}{6}{figure.caption.21}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Morphological Operations}}{7}{figure.caption.23}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Contour Detection}}{8}{figure.caption.25}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Flow Chart for Harris Corner Detection\relax }}{9}{figure.caption.27}
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Corner Detection}}{10}{figure.caption.28}
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Flow Chart for Computing Perspective Transform\relax }}{11}{figure.caption.30}
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Warped Reference Image}}{12}{figure.caption.31}
+\contentsline {figure}{\numberline {2.12}{\ignorespaces AdaptiveThresholding}}{13}{figure.caption.33}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Flow Chart for Image Registration\relax }}{14}{figure.caption.36}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces ScannedImage}}{15}{figure.caption.38}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Matching Orb Features in Reference Document}}{16}{figure.caption.40}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Matching Orb Features in Scanned Image}}{17}{figure.caption.41}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Best Matches}}{18}{figure.caption.42}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Warped Scanned Document}}{19}{figure.caption.43}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Thresholded Reference Document}}{20}{figure.caption.45}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Thresholded Scanned Document}}{21}{figure.caption.46}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Background Subtraction}}{22}{figure.caption.47}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Binary Restored Image}}{23}{figure.caption.49}
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Restored Image}}{24}{figure.caption.50}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {A.1}{\ignorespaces Scanned Image 2}}{26}{figure.caption.56}
+\contentsline {figure}{\numberline {A.2}{\ignorespaces Warped Image 2}}{26}{figure.caption.57}
+\contentsline {figure}{\numberline {A.3}{\ignorespaces Scanned Image 3}}{27}{figure.caption.58}
+\contentsline {figure}{\numberline {A.4}{\ignorespaces Warped Image 3}}{27}{figure.caption.59}
+\contentsline {figure}{\numberline {A.5}{\ignorespaces Reference Image 2}}{28}{figure.caption.61}
+\contentsline {figure}{\numberline {A.6}{\ignorespaces Filled Document}}{29}{figure.caption.62}
+\contentsline {figure}{\numberline {A.7}{\ignorespaces Restored Image 2}}{30}{figure.caption.63}
+\contentsline {figure}{\numberline {A.8}{\ignorespaces Filled Document 2}}{31}{figure.caption.64}
+\contentsline {figure}{\numberline {A.9}{\ignorespaces Restored Image 3}}{32}{figure.caption.65}
+\addvspace {10\p@ }

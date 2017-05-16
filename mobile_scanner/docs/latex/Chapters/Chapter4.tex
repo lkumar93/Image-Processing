@@ -1,0 +1,32 @@
+% Chapter 1
+
+\chapter{Conclusion} % Main chapter title
+
+\label{Chapter4} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+%------------------------------------------------------------------------
+
+% Define some commands to keep the formatting separated from the content %------------------------------------------------------------------------
+
+\section{Observations}
+In this project, a sequential method to extract a document from an image and register it in order to do content extraction of the filled version of the same document has been laid out and implemented. Based on the experiments conducted as a part of this project, a few keen observations can be made as follows.
+\begin{itemize}
+	\item The technique works well as long as the \nameref{Assumptions} are satisfied.
+	\item \nameref{Chapter2} takes roughly 5 to 7 seconds and \nameref{Chapter3} with Content Extraction takes roughly 15 to 25 seconds depending on the size and nature of the image. Hence totally the program takes about 30 seconds to execute.
+	\item Sometimes specific tuning for parameters like Adaptive Thresholding Constant, Kernel Sizes, to suit a particular image is required.
+	\item As \nameref{Assumptions} made do not require any sort of markings or specific ink color for the filled content, the output is not perfect .
+	\item Background subtraction works well in-spite of having obstructions in the scanned image.
+\end{itemize}
+%----------------------------------------------------------------------------------------
+
+\section{Future Works}
+
+\begin{itemize}
+	\item Optimize the code and algorithm to take less then 2 seconds to give the final output.
+	\item Reduce the number of  \nameref{Assumptions} .
+	\item Do additional filtering to remove artifacts due to border effects, obstructions and minute \\differences in image alignment.
+	\item Automated tuning of certain parameters based on the nature of the image.
+	\item Integrate OCR.
+\end{itemize}
+
+
