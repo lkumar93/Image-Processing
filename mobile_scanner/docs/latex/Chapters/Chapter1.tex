@@ -1,0 +1,42 @@
+% Chapter 1
+
+\chapter{Overview} % Main chapter title
+
+\label{Chapter1} % For referencing the chapter elsewhere, use \ref{Chapter1} 
+
+%------------------------------------------------------------------------
+
+% Define some commands to keep the formatting separated from the content 
+\newcommand{\keyword}[1]{\textbf{#1}}
+\newcommand{\tabhead}[1]{\textbf{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{\bfseries#1}}
+\newcommand{\option}[1]{\texttt{\itshape#1}}
+
+%------------------------------------------------------------------------
+
+\section{Introduction}
+With increasing prevalence of cell phones among all the people, traditional devices, that have been used for various functions, are being replaced by cell phones. One such device is the scanner, which has been traditionally used to scan paper documents like forms, receipts, ID's. As the cell phone has a camera in it, the images of paper documents can be captured by it and advanced image processing techniques can be used to extract the document properly. The methodology behind document extraction from camera images and image registration has been implemented and analyzed as a part of this project.
+
+%----------------------------------------------------------------------------------------
+
+\section{Problem Statement}
+
+The goal of the project is to implement and investigate the techniques that goes behind extracting a document from a mobile phone's image. Apart from just extracting the document, an enhanced functionality, that allows for image registration of a reference blank page and extraction of the filled content, has to be implemented.
+ 
+\section{Assumptions Made}
+\label{Assumptions}
+\begin{itemize}
+  \item The reference document is captured in a well lit and contrasting environment.
+  \item The reference document is rectangular and convex.
+  \item The reference document's 4 edges and 4 corners are clearly visible.
+  \item The reference document occupies the most area in the captured image.
+  \item The document with filled content has sufficient features.
+\end{itemize}
+
+\section{Related Works}
+
+Various mobile scanning apps, like CamScanner, ScanBot, Evernote Scannable, Turbo Scan, are now available on app stores of Android, Apple and Windows phones. These apps include various sophisticated features, like OCR, Text Extraction, Image Annotation, Document Categorization etc., apart from the basic document extraction functionality .
+
+
+

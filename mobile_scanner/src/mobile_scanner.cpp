@@ -54,7 +54,7 @@ struct RansacT
 //
 ///////////////////////////////////////////
 
-
+// Use RANSAC to compute the best perspective transform that minimizes alignment error
 RansacT get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPoint> keypoints2, std::vector<DMatch> matches, int iterations = 50000, float threshold = 0.175)
 {
 
@@ -188,12 +188,13 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
   }
 
-
+//Extract the reference document
  Mat scan_document(const Mat& input_image, bool image_registration = false)
 {
 
    Mat grayscale_image, equalized_image,detected_edges, canny_detected_edges,receipt,warped_image;
 
+   // Resize the image if its greater than 640 X 480 resolution based on the computed scale factor	 
    float row_ratio = cvCeil(input_image.rows/640);
    float col_ratio = cvCeil(input_image.cols/480);
  
@@ -213,6 +214,7 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 	scale_factor = 1;
    }
 
+   // Enhance image particularly the edges to make it suitable for further processing	 
    grayscale_image =  convert_to_grayscale(rgb_image_resized);
    grayscale_image =  gaussian_filter(grayscale_image,3, 1.4);
 
@@ -225,10 +227,12 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
    equalized_image = sharpen(equalized_image,5, 1);
 
+   // Extract edges using canny edge detection method
    canny_detected_edges = canny_edge_detection(equalized_image, THRESHOLD_RATIO_L, THRESHOLD_RATIO_H);
 
    detected_edges = canny_detected_edges;
 
+   // Morphological closing and opening to remove holes,  discontinuities and noise
    detected_edges =  morphological_filter( detected_edges, 5, true, false);
    detected_edges =  morphological_filter( detected_edges, 3, false, false);
    detected_edges =  morphological_filter( detected_edges, 3, false, false);
@@ -242,10 +246,12 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
    vector<Point> largest_contour;
    vector<Point> rectangle;
 
+   // Extract contours using OpenCV's findContours method
    findContours( detected_edges, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) );
 
    int number_of_contours = contours.size();
   
+   // find the largest convex rectangular contour and assume it to be the document
    if (number_of_contours > 0 )
    {
 	  float previous_area = 0.0;
@@ -287,6 +293,7 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 
 	 Mat detected_corners;
 
+	 // Extract the four corners of the contour using harris corner detection method
 	 CornerT corner_data = harris_corner_detection(image_of_contours,-0.25,30,0.03,4);
 
 	 detected_corners = corner_data.corner_image;
@@ -301,10 +308,12 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 	 else
 		cout<<"Image with "<<corner_data.corner_indices.size()<<" corners found"<<endl;
 
+	 // Order the corners in a clockwise manner
 	 order_points(corner_data.corner_indices, ordered_points);
 
 	 cout<<"Scaled Corner Points"<<endl;
-
+   
+	 //Upscale the corners to suit the original image size using the previously computed scale factor
 	 for(int i = 0 ; i<4 ; i++)
 	 {
 		cout<<"row = "<<ordered_points[i].row*scale_factor<<" , col="<<ordered_points[i].col*scale_factor<<endl;
@@ -313,6 +322,7 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 		ordered_points[i].col = cvFloor(ordered_points[i].col*scale_factor);
 	 }	
 
+	 //Create an optimal reference rectangle based on the corners
 	 int width1 = cvFloor(sqrt(pow(ordered_points[3].col - ordered_points[2].col,2) + pow(ordered_points[3].row - ordered_points[2].row,2)));
 	 int width2 = cvFloor(sqrt(pow(ordered_points[1].col - ordered_points[0].col,2) + pow(ordered_points[1].row - ordered_points[0].row,2)));
 
@@ -344,17 +354,22 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
 	rgb_image_resized = input_image.clone();
         
 	 Mat warped_grayscale_image;
+	   
+	 //Compute the perspective transform between the corners of the document and the reference rectangle
 
 	 Mat pt =  perspective_transform(input_rectangle, output_rectangle);
 
+	 // Warp the image using the computed perspective transform
 	 warp_image(rgb_image_resized, warped_image, pt);
 
+	 // Do bilinear interpolation to fill the vacant pixels
 	 bilinearInterpolation(warped_image,vacant_pixel_value);
 
 	 warped_grayscale_image = convert_to_grayscale(warped_image);
 
 	 receipt = warped_grayscale_image;
 
+	 // Do adaptive thresholding to get binary version of the warped document
 	 threshold_image(gaussian_filter(warped_grayscale_image,3, 1.4), receipt, 5, false, true);
 
 //  	 receipt =  morphological_filter( receipt, 3, false, false);
@@ -402,6 +417,8 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
    return warped_image;
 }
 
+//Subtract the background using adaptively thresholded version of reference and filled document
+// to extract the foreground
 Mat background_subtraction(Mat image1, Mat image2)
 {
 	Mat thresholded_image1,thresholded_image2, subtracted_image1,subtracted_image2;
@@ -446,7 +463,7 @@ Mat background_subtraction(Mat image1, Mat image2)
 	return subtracted_image2;
 }
 
-
+// Overlay the extracted text of the filled document on top of the reference document
 Mat foreground_addition(const Mat& image1, const Mat& image2, const Mat& foreground)
 {
     Mat restored_image = image1.clone();
@@ -469,6 +486,7 @@ Mat foreground_addition(const Mat& image1, const Mat& image2, const Mat& foregro
 
 }
 
+// Align the filled document with the reference document
 Mat image_matching(Mat reference_image, Mat scanned_image)
 {
 
@@ -480,8 +498,10 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 
     vector<KeyPoint> keypoints1, keypoints2;
 
+   // Compute atleast 500 ORB features that pass ratio and symmetry test iteratively
     while(size < 500 && count < max_iterations)
     {
+	    // Use OpenCV's feature detection API to compute ORB features in both the images
 	    Ptr<FeatureDetector> detector = ORB::create(5000 + count*500);
 	    Ptr<DescriptorExtractor> extractor = ORB::create();
 
@@ -492,6 +512,7 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 	    extractor->compute(reference_image, keypoints1,descriptors1);
 	    extractor->compute(scanned_image, keypoints2,descriptors2);
 
+	    // Use K-Nearest Neighbor to get corresponding features
 	    vector< vector<DMatch> > matches12, matches21;
 	    Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("BruteForce-Hamming");
 	    matcher->knnMatch( descriptors1, descriptors2, matches12, 2 );
@@ -499,7 +520,7 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 
 	    std::vector<DMatch> good_matches1, good_matches2;
 
-	    // Ratio Test proposed by David Lowe 
+	    // Filter features by Ratio Test proposed by David Lowe 
 	    float ratio = 0.8;
 	    for(int i=0; i < matches12.size(); i++){
 		if(matches12[i][0].distance < ratio * matches12[i][1].distance)
@@ -511,7 +532,7 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 		    good_matches2.push_back(matches21[i][0]);
 	    }
 
-	    // Symmetric Test
+	    // Filter features by Symmetric Test
 	    std::vector<DMatch> better_matches;
 	    for(int i=0; i<good_matches1.size(); i++){
 		for(int j=0; j<good_matches2.size(); j++){
@@ -542,6 +563,7 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 	circle( orb_scanned_image, Point( col2, row2), 10,  Scalar(0,255,0), 2, 8, 0 );
     }
 
+   // Get the four best corresponding features and the perspective transform linking the both
    RansacT data = get_best_perspective_transform(keypoints1, keypoints2, matches);
    Mat best_perspective_transform = data.best_perspective_transform;
 
@@ -565,8 +587,10 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 
    Mat output_image = Mat::zeros(reference_image.rows,reference_image.cols,CV_8UC3);
 
+   // Warp filled document to align with the reference document
    warp_image(scanned_image,output_image,best_perspective_transform);
 
+   // Do bilinear interpolation to fill the vacant pixels
    bilinearInterpolation(output_image);
 
    imshow("Better Matches Reference Image",orb_reference_image);
@@ -612,6 +636,7 @@ int main(int argc, char** argv )
 	    image2 = imread( "../images/image_registration/scanned_image.jpg", 1 );
 	    image1 = imread( "../images/image_registration/reference_image.jpg", 1);
 
+	    // Resize Images
 	    int max_rows = 1920;
 	    int max_cols = 1080;
 
@@ -657,11 +682,21 @@ int main(int argc, char** argv )
 	    }
 
 	    Mat scanned_image = image2;
+	    
+	    //Document Extraction
 	    Mat reference_image = scan_document(image1,true);
+	    
+	    // Image Registration
 	    Mat warped_scanned_image = image_matching(reference_image,scanned_image);
+	    
+	    // Background Subtraction to extract filled text
 	    Mat foreground = background_subtraction(reference_image, warped_scanned_image);
+	    
+	    // Foreground addition to overlay filled text on the reference document and remove obstructions in the image
 	    Mat restored_image = foreground_addition(reference_image, warped_scanned_image, foreground);
 	    Mat thresholded_restored_image;
+
+	    // Adaptive thresholding to get binary version of the restored image
 	    threshold_image(gaussian_filter(convert_to_grayscale(restored_image),3, 1.4),thresholded_restored_image, 5, false, true);
 
 	    imshow("Reference Image",reference_image);
@@ -688,6 +723,7 @@ int main(int argc, char** argv )
 		printf("No image data \n");
 		return -1;
 	    }
+	    //Document Extraction
 	    scan_document(image1);
 
      }

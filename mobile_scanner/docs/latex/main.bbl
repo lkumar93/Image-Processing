@@ -1,0 +1,707 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.8 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\sortlist[entry]{nyt/global/}
+  \entry{Reference15}{article}{}
+    \name{author}{1}{}{%
+      {{hash=ANS}{%
+         family={Altman},
+         familyi={A\bibinitperiod},
+         given={N.\bibnamedelima S.},
+         giveni={N\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ANS1}
+    \strng{fullhash}{ANS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1992}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \verb{doi}
+    \verb 10.1080/00031305.1992.10475879
+    \endverb
+    \field{number}{3}
+    \field{pages}{175\bibrangedash 185}
+    \field{title}{An Introduction to Kernel and Nearest-Neighbor Nonparametric
+  Regression}
+    \verb{url}
+    \verb http://www.tandfonline.com/doi/abs/10.1080/00031305.1992.10475879
+    \endverb
+    \field{volume}{46}
+    \field{journaltitle}{The American Statistician}
+    \field{year}{1992}
+  \endentry
+
+  \entry{Reference9}{article}{}
+    \name{author}{4}{}{%
+      {{hash=BH}{%
+         family={Bay},
+         familyi={B\bibinitperiod},
+         given={Herbert},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=EA}{%
+         family={Ess},
+         familyi={E\bibinitperiod},
+         given={Andreas},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=TT}{%
+         family={Tuytelaars},
+         familyi={T\bibinitperiod},
+         given={Tinne},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=VGL}{%
+         family={Van\bibnamedelima Gool},
+         familyi={V\bibinitperiod\bibinitdelim G\bibinitperiod},
+         given={Luc},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Elsevier Science Inc.}%
+    }
+    \keyw{Camera calibration, Feature description, Interest points, Local
+  features, Object recognition}
+    \strng{namehash}{BH+1}
+    \strng{fullhash}{BHEATTVGL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1016/j.cviu.2007.09.014
+    \endverb
+    \field{issn}{1077-3142}
+    \field{number}{3}
+    \field{pages}{346\bibrangedash 359}
+    \field{title}{Speeded-Up Robust Features (SURF)}
+    \verb{url}
+    \verb http://dx.doi.org/10.1016/j.cviu.2007.09.014
+    \endverb
+    \field{volume}{110}
+    \list{location}{1}{%
+      {New York, NY, USA}%
+    }
+    \field{journaltitle}{Comput. Vis. Image Underst.}
+    \field{month}{06}
+    \field{year}{2008}
+  \endentry
+
+  \entry{Reference1}{article}{}
+    \name{author}{1}{}{%
+      {{hash=BG}{%
+         family={Bradski},
+         familyi={B\bibinitperiod},
+         given={G.},
+         giveni={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BG1}
+    \strng{fullhash}{BG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2000}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{title}{{The OpenCV Library}}
+    \verb{url}
+    \verb http://opencv.org/
+    \endverb
+    \field{journaltitle}{Dr. Dobb's Journal of Software Tools}
+    \field{year}{2000}
+  \endentry
+
+  \entry{Reference13}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=CM}{%
+         family={Calonder},
+         familyi={C\bibinitperiod},
+         given={Michael},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=LV}{%
+         family={Lepetit},
+         familyi={L\bibinitperiod},
+         given={Vincent},
+         giveni={V\bibinitperiod},
+      }}%
+      {{hash=SC}{%
+         family={Strecha},
+         familyi={S\bibinitperiod},
+         given={Christoph},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=FP}{%
+         family={Fua},
+         familyi={F\bibinitperiod},
+         given={Pascal},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer-Verlag}%
+    }
+    \strng{namehash}{CM+1}
+    \strng{fullhash}{CMLVSCFP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2010}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{booktitle}{Proceedings of the 11th European Conference on Computer
+  Vision: Part IV}
+    \field{isbn}{3-642-15560-X, 978-3-642-15560-4}
+    \field{pages}{778\bibrangedash 792}
+    \field{series}{ECCV'10}
+    \field{title}{BRIEF: Binary Robust Independent Elementary Features}
+    \verb{url}
+    \verb http://dl.acm.org/citation.cfm?id=1888089.1888148
+    \endverb
+    \list{location}{1}{%
+      {Heraklion, Crete, Greece}%
+    }
+    \field{year}{2010}
+    \warn{\item Can't use 'location' + 'address'}
+  \endentry
+
+  \entry{Reference7}{article}{}
+    \name{author}{1}{}{%
+      {{hash=CJ}{%
+         family={Canny},
+         familyi={C\bibinitperiod},
+         given={J},
+         giveni={J},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {IEEE Computer Society}%
+    }
+    \keyw{Edge detection, feature extraction, image processing, machine vision,
+  multiscale image analysis}
+    \strng{namehash}{CJ1}
+    \strng{fullhash}{CJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1986}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.1109/TPAMI.1986.4767851
+    \endverb
+    \field{issn}{0162-8828}
+    \field{number}{6}
+    \field{pages}{679\bibrangedash 698}
+    \field{title}{A Computational Approach to Edge Detection}
+    \verb{url}
+    \verb http://dx.doi.org/10.1109/TPAMI.1986.4767851
+    \endverb
+    \field{volume}{8}
+    \list{location}{1}{%
+      {Washington, DC, USA}%
+    }
+    \field{journaltitle}{IEEE Trans. Pattern Anal. Mach. Intell.}
+    \field{month}{06}
+    \field{year}{1986}
+  \endentry
+
+  \entry{Reference3}{article}{}
+    \name{author}{4}{}{%
+      {{hash=ER}{%
+         family={Ethan},
+         familyi={E\bibinitperiod},
+         given={Rublee},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=VR}{%
+         family={Vincent},
+         familyi={V\bibinitperiod},
+         given={Rabaud},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=KK}{%
+         family={Kurt},
+         familyi={K\bibinitperiod},
+         given={Konolige},
+         giveni={K\bibinitperiod},
+      }}%
+      {{hash=GB}{%
+         family={Gary},
+         familyi={G\bibinitperiod},
+         given={Bradski},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ER+1}
+    \strng{fullhash}{ERVRKKGB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2011}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \field{title}{ORB: An efficient alternative to SIFT or SURF}
+    \verb{url}
+    \verb http://www.willowgarage.com/sites/default/files/orb_final.pdf
+    \endverb
+    \field{volume}{13}
+    \field{journaltitle}{Proc. of the IEEE Intl. Conf. on Computer Vision
+  (ICCV)}
+    \field{year}{2011}
+  \endentry
+
+  \entry{Reference11}{article}{}
+    \name{author}{2}{}{%
+      {{hash=FMA}{%
+         family={Fischler},
+         familyi={F\bibinitperiod},
+         given={Martin\bibnamedelima A.},
+         giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+      {{hash=BRC}{%
+         family={Bolles},
+         familyi={B\bibinitperiod},
+         given={Robert\bibnamedelima C.},
+         giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {ACM}%
+    }
+    \keyw{automated cartography, camera calibration, image matching, location
+  determination, model fitting, scene analysis}
+    \strng{namehash}{FMABRC1}
+    \strng{fullhash}{FMABRC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1981}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.1145/358669.358692
+    \endverb
+    \field{issn}{0001-0782}
+    \field{number}{6}
+    \field{pages}{381\bibrangedash 395}
+    \field{title}{Random Sample Consensus: A Paradigm for Model Fitting with
+  Applications to Image Analysis and Automated Cartography}
+    \verb{url}
+    \verb http://doi.acm.org/10.1145/358669.358692
+    \endverb
+    \field{volume}{24}
+    \list{location}{1}{%
+      {New York, NY, USA}%
+    }
+    \field{journaltitle}{Commun. ACM}
+    \field{month}{06}
+    \field{year}{1981}
+  \endentry
+
+  \entry{Reference10}{online}{}
+    \name{author}{4}{}{%
+      {{hash=FR}{%
+         family={Fisher},
+         familyi={F\bibinitperiod},
+         given={Robert},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=PS}{%
+         family={Perkins},
+         familyi={P\bibinitperiod},
+         given={Simon},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=WA}{%
+         family={Walker},
+         familyi={W\bibinitperiod},
+         given={Ashley},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=WE}{%
+         family={Wolfart},
+         familyi={W\bibinitperiod},
+         given={Erik},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \keyw{maarb maarbused}
+    \strng{namehash}{FR+1}
+    \strng{fullhash}{FRPSWAWE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1997}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{title}{71 - Hypermedia Image Processing Reference (HIPR)}
+    \list{location}{1}{%
+      {http://homepages.inf.ed.ac.uk/rbf/HIPR2/morops.htm (zuletzt aufgerufen:
+  18.10.2012)}%
+    }
+    \field{year}{1997}
+  \endentry
+
+  \entry{Reference14}{article}{}
+    \name{author}{2}{}{%
+      {{hash=FLA}{%
+         family={Fletcher},
+         familyi={F\bibinitperiod},
+         given={Lloyd\bibnamedelima A.},
+         giveni={L\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+      {{hash=KR}{%
+         family={Kasturi},
+         familyi={K\bibinitperiod},
+         given={Rangachar},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {IEEE Computer Society}%
+    }
+    \keyw{Hough transform, character recognition, computer graphics,
+  computerised pattern recognition, computerised picture processing,
+  computerized picture processing, document analysis, graphics recognition,
+  mixed text/graphics images, text string separation, transforms}
+    \strng{namehash}{FLAKR1}
+    \strng{fullhash}{FLAKR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1988}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.1109/34.9112
+    \endverb
+    \field{issn}{0162-8828}
+    \field{number}{6}
+    \field{pages}{910\bibrangedash 918}
+    \field{title}{A Robust Algorithm for Text String Separation from Mixed
+  Text/Graphics Images}
+    \verb{url}
+    \verb http://dx.doi.org/10.1109/34.9112
+    \endverb
+    \field{volume}{10}
+    \list{location}{1}{%
+      {Washington, DC, USA}%
+    }
+    \field{journaltitle}{IEEE Trans. Pattern Anal. Mach. Intell.}
+    \field{month}{11}
+    \field{year}{1988}
+  \endentry
+
+  \entry{Reference2}{book}{}
+    \name{author}{2}{}{%
+      {{hash=GRC}{%
+         family={Gonzalez},
+         familyi={G\bibinitperiod},
+         given={Rafael\bibnamedelima C.},
+         giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+      {{hash=WRE}{%
+         family={Woods},
+         familyi={W\bibinitperiod},
+         given={Richard\bibnamedelima E.},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Prentice-Hall, Inc.}%
+    }
+    \strng{namehash}{GRCWRE1}
+    \strng{fullhash}{GRCWRE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2006}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{isbn}{013168728X}
+    \field{title}{Digital Image Processing (3rd Edition)}
+    \list{location}{1}{%
+      {Upper Saddle River, NJ, USA}%
+    }
+    \field{year}{2006}
+  \endentry
+
+  \entry{Reference6}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=HC}{%
+         family={Harris},
+         familyi={H\bibinitperiod},
+         given={Chris},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Stephens},
+         familyi={S\bibinitperiod},
+         given={Mike},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HCSM1}
+    \strng{fullhash}{HCSM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1988}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{booktitle}{In Proc. of Fourth Alvey Vision Conference}
+    \field{pages}{147\bibrangedash 151}
+    \field{title}{A combined corner and edge detector}
+    \field{year}{1988}
+  \endentry
+
+  \entry{Reference5}{book}{}
+    \name{author}{1}{}{%
+      {{hash=JAK}{%
+         family={Jain},
+         familyi={J\bibinitperiod},
+         given={Anil\bibnamedelima K.},
+         giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Prentice-Hall, Inc.}%
+    }
+    \strng{namehash}{JAK1}
+    \strng{fullhash}{JAK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1989}
+    \field{sortinit}{J}
+    \field{sortinithash}{J}
+    \field{isbn}{0-13-336165-9}
+    \field{title}{Fundamentals of Digital Image Processing}
+    \list{location}{1}{%
+      {Upper Saddle River, NJ, USA}%
+    }
+    \field{year}{1989}
+  \endentry
+
+  \entry{Reference8}{article}{}
+    \name{author}{1}{}{%
+      {{hash=LDG}{%
+         family={Lowe},
+         familyi={L\bibinitperiod},
+         given={David\bibnamedelima G.},
+         giveni={D\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Kluwer Academic Publishers}%
+    }
+    \keyw{image matching, invariant features, object recognition, scale
+  invariance}
+    \strng{namehash}{LDG1}
+    \strng{fullhash}{LDG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2004}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \verb{doi}
+    \verb 10.1023/B:VISI.0000029664.99615.94
+    \endverb
+    \field{issn}{0920-5691}
+    \field{number}{2}
+    \field{pages}{91\bibrangedash 110}
+    \field{title}{Distinctive Image Features from Scale-Invariant Keypoints}
+    \verb{url}
+    \verb http://dx.doi.org/10.1023/B:VISI.0000029664.99615.94
+    \endverb
+    \field{volume}{60}
+    \list{location}{1}{%
+      {Hingham, MA, USA}%
+    }
+    \field{journaltitle}{Int. J. Comput. Vision}
+    \field{month}{11}
+    \field{year}{2004}
+  \endentry
+
+  \entry{Reference16}{incollection}{}
+    \name{author}{2}{}{%
+      {{hash=MJL}{%
+         family={Mundy},
+         familyi={M\bibinitperiod},
+         given={Joseph\bibnamedelima L.},
+         giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+      {{hash=ZA}{%
+         family={Zisserman},
+         familyi={Z\bibinitperiod},
+         given={Andrew},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=MJL}{%
+         family={Mundy},
+         familyi={M\bibinitperiod},
+         given={Joseph\bibnamedelima L.},
+         giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+      {{hash=ZA}{%
+         family={Zisserman},
+         familyi={Z\bibinitperiod},
+         given={Andrew},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {MIT Press}%
+    }
+    \strng{namehash}{MJLZA1}
+    \strng{fullhash}{MJLZA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1992}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{chapter}{AppendixM : Projective Geometry for Machine Vision}
+    \field{isbn}{0-262-13285-0}
+    \field{pages}{463\bibrangedash 519}
+    \field{title}{Geometric Invariance in Computer Vision}
+    \verb{url}
+    \verb http://dl.acm.org/citation.cfm?id=153634.153657
+    \endverb
+    \list{location}{1}{%
+      {Cambridge, MA, USA}%
+    }
+    \field{year}{1992}
+  \endentry
+
+  \entry{Reference12}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=RE}{%
+         family={Rosten},
+         familyi={R\bibinitperiod},
+         given={Edward},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=DT}{%
+         family={Drummond},
+         familyi={D\bibinitperiod},
+         given={Tom},
+         giveni={T\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {IEEE Computer Society}%
+    }
+    \strng{namehash}{REDT1}
+    \strng{fullhash}{REDT1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2005}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{booktitle}{Proceedings of the Tenth IEEE International Conference on
+  Computer Vision - Volume 2}
+    \verb{doi}
+    \verb 10.1109/ICCV.2005.104
+    \endverb
+    \field{isbn}{0-7695-2334-X-02}
+    \field{pages}{1508\bibrangedash 1515}
+    \field{series}{ICCV '05}
+    \field{title}{Fusing Points and Lines for High Performance Tracking}
+    \verb{url}
+    \verb http://dx.doi.org/10.1109/ICCV.2005.104
+    \endverb
+    \list{location}{1}{%
+      {Washington, DC, USA}%
+    }
+    \field{year}{2005}
+  \endentry
+
+  \entry{Reference4}{article}{}
+    \name{author}{2}{}{%
+      {{hash=SS}{%
+         family={Suzuki},
+         familyi={S\bibinitperiod},
+         given={S.},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=AK}{%
+         family={Abe},
+         familyi={A\bibinitperiod},
+         given={K},
+         giveni={K},
+      }}%
+    }
+    \strng{namehash}{SSAK1}
+    \strng{fullhash}{SSAK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1985}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{number}{1}
+    \field{pages}{32\bibrangedash 46}
+    \field{title}{Topological Structural Analysis of Digitized Binary Images by
+  Border Following}
+    \verb{url}
+    \verb http://download.aizhong365.net/xuebalib.com.17233.pdf
+    \endverb
+    \field{volume}{30}
+    \field{journaltitle}{CVGIP}
+    \field{month}{01}
+    \field{year}{1985}
+  \endentry
+
+  \entry{Reference17}{inproceedings}{}
+    \name{author}{2}{}{%
+      {{hash=TC}{%
+         family={Tomasi},
+         familyi={T\bibinitperiod},
+         given={C.},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=MR}{%
+         family={Manduchi},
+         familyi={M\bibinitperiod},
+         given={R.},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {IEEE Computer Society}%
+    }
+    \strng{namehash}{TCMR1}
+    \strng{fullhash}{TCMR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1998}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{booktitle}{Proceedings of the Sixth International Conference on
+  Computer Vision}
+    \field{isbn}{81-7319-221-9}
+    \field{pages}{839\bibrangedash }
+    \field{series}{ICCV '98}
+    \field{title}{Bilateral Filtering for Gray and Color Images}
+    \verb{url}
+    \verb http://dl.acm.org/citation.cfm?id=938978.939190
+    \endverb
+    \list{location}{1}{%
+      {Washington, DC, USA}%
+    }
+    \field{year}{1998}
+  \endentry
+\endsortlist
+\endinput
