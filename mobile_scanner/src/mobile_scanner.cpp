@@ -214,7 +214,7 @@ void order_points(std::vector<IndexT> corner_indices, IndexT ordered_points[])
    }
 
    grayscale_image =  convert_to_grayscale(rgb_image_resized);
-   grayscale_image =	gaussian_filter(grayscale_image,3, 1.4);
+   grayscale_image =  gaussian_filter(grayscale_image,3, 1.4);
 
    equalized_image = grayscale_image; 
 
@@ -612,6 +612,44 @@ int main(int argc, char** argv )
 	    image2 = imread( "../images/image_registration/scanned_image.jpg", 1 );
 	    image1 = imread( "../images/image_registration/reference_image.jpg", 1);
 
+	    int max_rows = 1920;
+	    int max_cols = 1080;
+
+ 	    float row_ratio1 = cvCeil(image1.rows/max_rows);
+            float col_ratio1 = cvCeil(image1.cols/max_cols);
+ 
+            int scale_factor1 = row_ratio1>col_ratio1?row_ratio1:col_ratio1;
+
+   	    if(scale_factor1 < 1)
+		scale_factor1 = 1;
+
+ 	    float row_ratio2 = cvCeil(image2.rows/max_rows);
+            float col_ratio2 = cvCeil(image2.cols/max_cols);
+ 
+            int scale_factor2 = row_ratio2>col_ratio2?row_ratio2:col_ratio2;
+
+   	    if(scale_factor2 < 1)
+		scale_factor2 = 1;
+
+   	    Mat image1_resized = Mat::zeros( image1.rows/scale_factor1, image1.cols/scale_factor1, CV_8UC3 );
+   	    Mat image2_resized = Mat::zeros( image2.rows/scale_factor2, image2.cols/scale_factor2, CV_8UC3 );
+
+   	    if(image1.cols > max_cols || image1.rows > max_rows )
+	     {
+     		image1_resized = resize_image(image1,image1.cols/scale_factor1,image1.cols/scale_factor1);
+		image1 = image1_resized;
+	     }
+   	    else
+		scale_factor1 = 1;
+
+   	    if(image2.cols > max_cols || image2.rows > max_rows )
+	    {
+     		image2_resized = resize_image(image2,image2.cols/scale_factor2,image2.cols/scale_factor2);
+		image2 = image2_resized;
+	    }
+   	    else
+		scale_factor2 = 1;
+
 	    if ( !image1.data || !image2.data)
 	    {
 		printf("No image data \n");
@@ -624,7 +662,7 @@ int main(int argc, char** argv )
 	    Mat foreground = background_subtraction(reference_image, warped_scanned_image);
 	    Mat restored_image = foreground_addition(reference_image, warped_scanned_image, foreground);
 	    Mat thresholded_restored_image;
-	    threshold_image(convert_to_grayscale(restored_image),thresholded_restored_image, 6, false, true);
+	    threshold_image(gaussian_filter(convert_to_grayscale(restored_image),3, 1.4),thresholded_restored_image, 5, false, true);
 
 	    imshow("Reference Image",reference_image);
             imwrite( "../results/image_registration/reference_image.jpg", reference_image);
