@@ -299,8 +299,8 @@ Mat morphological_filter(const Mat& input_image, int kernel_size, bool max, bool
   int k;		
 
   float value = 0.0;
-  for(int j = offset; j < padded_image.rows - offset ; j++)
-       for(int i = offset; i < padded_image.cols - offset; i++)
+  for(int j = offset+5; j < padded_image.rows - offset-5 ; j++)
+       for(int i = offset+5; i < padded_image.cols - offset-5; i++)
        {
 	   k = 0;	
 

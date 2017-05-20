@@ -120,8 +120,8 @@ Mat get_image_gradient(const Mat& input_image, const Mat& horizontal_image, cons
 
     Mat filtered_image = Mat(input_image.rows, input_image.cols, CV_8UC1, 0.0);
 
-    for(int j = 1; j < input_image.rows-1 ; j++)
-       for(int i = 1; i < input_image.cols-1; i++)
+    for(int j = 5; j < input_image.rows-5 ; j++)
+       for(int i = 5; i < input_image.cols-5; i++)
        {
 	    filtered_image.at<uchar>(j,i) = (( sqrt( pow(horizontal_image.at<float>(j,i),2) + pow(vertical_image.at<float>(j,i),2)))) ;
        }
@@ -135,8 +135,8 @@ Mat get_image_gradient_direction(const Mat& input_image, const Mat& horizontal_i
 
    Mat filtered_image = Mat(input_image.rows, input_image.cols, CV_32F, 0.0);
 
-   for(int j = 1; j < input_image.rows-1 ; j++)
-       for(int i = 1; i < input_image.cols-1; i++)
+   for(int j = 5; j < input_image.rows-5 ; j++)
+       for(int i = 5; i < input_image.cols-5; i++)
        {
 	    filtered_image.at<float>(j,i) =(float)(atan2( vertical_image.at<float>(j,i), horizontal_image.at<float>(j,i))*180/PI);
        }
