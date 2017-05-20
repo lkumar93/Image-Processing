@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/W32TeX) (preloaded format=pdflatex 2017.5.13)  16 MAY 2017 04:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/W32TeX) (preloaded format=pdflatex 2017.5.13)  18 MAY 2017 23:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -3002,21 +3002,26 @@ Overfull \hbox (176.75589pt too wide) in paragraph at lines 2374--2376
  []
 
 [80] [81]
-Overfull \hbox (80.75589pt too wide) in paragraph at lines 2465--2467
+Overfull \hbox (80.75589pt too wide) in paragraph at lines 2466--2468
 [][][][][][][][][][][][][][][][][][]  
  []
 
-[82] [83] [84] [85] [86] [87] [88] [89]
-Overfull \hbox (30.75589pt too wide) in paragraph at lines 2875--2877
-[][][][][][][][][][][][][] 
+[82] [83] [84] [85] [86] [87] [88] [89] [90]
+Overfull \hbox (2.75589pt too wide) in paragraph at lines 2917--2918
+[][][][][][][][][][][][][][][][][][]  
  []
 
-[90]) [91]
+
+Overfull \hbox (2.75589pt too wide) in paragraph at lines 2925--2926
+[][][][][][][][][][][][][][][][][][]  
+ []
+
+[91]) [92]
 1: section
-[92
+[93
 
 
-] [93]
+] [94]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 268.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
  (./main.aux (./Chapters/Chapter1.aux) (./Chapters/Chapter2.aux)
@@ -3024,36 +3029,50 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
 ) (./Appendices/AppendixB.aux))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 268.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 268.
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 88DA2989DF178258F02AFD7DAAD55D4C;6284.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 88DA2989DF178258F02AFD7DAAD55D4C;6284
+(rerunfilecheck)             After:  37495D3024286796622E4606892AE7FE;6284.
+
+Package biblatex Warning: Please rerun LaTeX.
+(biblatex)                Page breaks have changed.
+
 Package logreq Info: Writing requests to 'main.run.xml'.
 \openout1 = `main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 52417 strings out of 493013
- 1051978 string characters out of 6136993
- 1431511 words of memory out of 5000000
- 52219 multiletter control sequences out of 15000+600000
+ 52518 strings out of 493013
+ 1053426 string characters out of 6136993
+ 1431512 words of memory out of 5000000
+ 52239 multiletter control sequences out of 15000+600000
  42946 words of font info for 75 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 66i,22n,97p,10379b,3337s stack positions out of 5000i,500n,10000p,200000b,80000s
-{d:/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}<d:/texlive/2016/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2016/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2016/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmmi8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr10.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/
-cmr8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-<d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><d:/texliv
-e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><d:/texlive/2016/tex
-mf-dist/fonts/type1/urw/courier/ucrr8a.pfb><d:/texlive/2016/texmf-dist/fonts/ty
-pe1/urw/palatino/uplb8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatin
-o/uplr8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><d
-:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (100 pages, 9874015 bytes).
+ 64i,22n,97p,10379b,3337s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{appendix*.2935} has been referenced but does not 
+exist, replaced by a fixed one
+
+{d:/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}<d:/texlive/2016/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2016/texmf-dist/font
+s/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2016/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmmi8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr10.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+r8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d
+:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><d:/texlive/
+2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><d:/texlive/2016/texmf
+-dist/fonts/type1/urw/courier/ucrr8a.pfb><d:/texlive/2016/texmf-dist/fonts/type
+1/urw/palatino/uplb8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/
+uplr8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><d:/
+texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on main.pdf (101 pages, 9863256 bytes).
 PDF statistics:
- 4376 PDF objects out of 5155 (max. 8388607)
- 4192 compressed objects within 42 object streams
- 3039 named destinations out of 3580 (max. 500000)
+ 4476 PDF objects out of 5155 (max. 8388607)
+ 4290 compressed objects within 43 object streams
+ 3120 named destinations out of 3580 (max. 500000)
  532 words of extra memory for PDF output out of 10000 (max. 10000000)
 
