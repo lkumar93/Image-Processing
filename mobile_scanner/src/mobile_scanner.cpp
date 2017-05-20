@@ -128,6 +128,7 @@ RansacT get_best_perspective_transform(vector<KeyPoint> keypoints1, vector<KeyPo
 		best_index_vector = index_vector;
 	}
 
+	
 	count++;
   }
 
@@ -490,7 +491,7 @@ Mat foreground_addition(const Mat& image1, const Mat& image2, const Mat& foregro
 Mat image_matching(Mat reference_image, Mat scanned_image)
 {
 
-    int size = 0;
+    int size = 0, prev_size = 0;
     int count = 0;
     int max_iterations = 20;
 
@@ -502,7 +503,7 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
     while(size < 500 && count < max_iterations)
     {
 	    // Use OpenCV's feature detection API to compute ORB features in both the images
-	    Ptr<FeatureDetector> detector = ORB::create(5000 + count*500);
+	    Ptr<FeatureDetector> detector = ORB::create(5000 + count*1000);
 	    Ptr<DescriptorExtractor> extractor = ORB::create();
 
 	    detector->detect(reference_image, keypoints1);
@@ -546,6 +547,9 @@ Mat image_matching(Mat reference_image, Mat scanned_image)
 	matches = better_matches;
 	count++;
 	cout<<"Feature Detection : Iteration ="<<count<<" , num features = "<<size<<endl;
+	if(prev_size >= size)
+		break;
+	prev_size = size;
    }
 
    Mat orb_reference_image = reference_image.clone();
