@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/W32TeX) (preloaded format=pdflatex 2017.5.13)  18 MAY 2017 23:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016/W32TeX) (preloaded format=pdflatex 2017.5.13)  20 MAY 2017 04:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2166,8 +2166,11 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
  (./main.aux
 (./Chapters/Chapter1.aux) (./Chapters/Chapter2.aux) (./Chapters/Chapter3.aux)
-(./Chapters/Chapter4.aux) (./Appendices/AppendixA.aux)
-(./Appendices/AppendixB.aux))
+(./Chapters/Chapter4.aux) (./Appendices/AppendixA.aux
+
+LaTeX Warning: Label `fig:WarpedImage3' multiply defined.
+
+) (./Appendices/AppendixB.aux))
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 118.
@@ -2505,7 +2508,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 90--92
 
  []
 
-<Figures/resized_input.jpg, id=359, 1084.05pt x 1927.2pt>
+<Figures/resized_input.jpg, id=373, 1084.05pt x 1927.2pt>
 File: Figures/resized_input.jpg Graphic file (type jpg)
 
 <use Figures/resized_input.jpg>
@@ -2528,7 +2531,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 106--108
 
  []
 
-<Figures/image_enhancement.jpg, id=366, 361.35pt x 642.4pt>
+<Figures/image_enhancement.jpg, id=380, 361.35pt x 642.4pt>
 File: Figures/image_enhancement.jpg Graphic file (type jpg)
 
 <use Figures/image_enhancement.jpg>
@@ -2559,7 +2562,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 163--164
 
  []
 
-<Figures/canny_edge_detection.jpg, id=378, 361.35pt x 642.4pt>
+<Figures/canny_edge_detection.jpg, id=392, 361.35pt x 642.4pt>
 File: Figures/canny_edge_detection.jpg Graphic file (type jpg)
 
 <use Figures/canny_edge_detection.jpg>
@@ -2576,7 +2579,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 175--179
 
  []
 
-<Figures/morphological_operation.jpg, id=384, 361.35pt x 642.4pt>
+<Figures/morphological_operation.jpg, id=398, 361.35pt x 642.4pt>
 File: Figures/morphological_operation.jpg Graphic file (type jpg)
 
 <use Figures/morphological_operation.jpg>
@@ -2593,7 +2596,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 192--196
 
  []
 
-<Figures/contour_detection.jpg, id=391, 361.35pt x 642.4pt>
+<Figures/contour_detection.jpg, id=405, 361.35pt x 642.4pt>
 File: Figures/contour_detection.jpg Graphic file (type jpg)
 
 <use Figures/contour_detection.jpg>
@@ -2624,7 +2627,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 259--260
 
  []
 
-<Figures/corner_detection.jpg, id=409, 361.35pt x 642.4pt>
+<Figures/corner_detection.jpg, id=423, 361.35pt x 642.4pt>
 File: Figures/corner_detection.jpg Graphic file (type jpg)
 
 <use Figures/corner_detection.jpg>
@@ -2650,7 +2653,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 342--343
 
  []
 
-<Figures/warped_image.jpg, id=422, 1023.825pt x 1330.9725pt>
+<Figures/warped_image.jpg, id=436, 1023.825pt x 1330.9725pt>
 File: Figures/warped_image.jpg Graphic file (type jpg)
 
 <use Figures/warped_image.jpg>
@@ -2666,7 +2669,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 356--357
 
  []
 
-<Figures/adaptive_thresholding.jpg, id=430, 1023.825pt x 1330.9725pt>
+<Figures/adaptive_thresholding.jpg, id=444, 1023.825pt x 1330.9725pt>
 File: Figures/adaptive_thresholding.jpg Graphic file (type jpg)
 
 <use Figures/adaptive_thresholding.jpg>
@@ -2693,7 +2696,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 88--90
 
 
 
-] <Figures/scanned_image.jpg, id=441, 1084.05pt x 1927.2pt>
+] <Figures/scanned_image.jpg, id=455, 1084.05pt x 1927.2pt>
 File: Figures/scanned_image.jpg Graphic file (type jpg)
 
 <use Figures/scanned_image.jpg>
@@ -2704,7 +2707,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 100--101
 
  []
 
-<Figures/orb_reference_image.jpg, id=452, 1023.825pt x 1330.9725pt>
+<Figures/orb_reference_image.jpg, id=466, 1023.825pt x 1330.9725pt>
 File: Figures/orb_reference_image.jpg Graphic file (type jpg)
 
 <use Figures/orb_reference_image.jpg>
@@ -2728,7 +2731,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 104--113
  []
 
 [16 <./Figures/orb_reference_image.jpg>]
-<Figures/orb_scanned_image.jpg, id=464, 1084.05pt x 1927.2pt>
+<Figures/orb_scanned_image.jpg, id=478, 1084.05pt x 1927.2pt>
 File: Figures/orb_scanned_image.jpg Graphic file (type jpg)
 
 <use Figures/orb_scanned_image.jpg>
@@ -2749,7 +2752,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 125--127
 
  []
 
-<Figures/best_four_matches_ransac.jpg, id=470, 1535.7375pt x 1249.66875pt>
+<Figures/best_four_matches_ransac.jpg, id=484, 1535.7375pt x 1249.66875pt>
 File: Figures/best_four_matches_ransac.jpg Graphic file (type jpg)
 
 <use Figures/best_four_matches_ransac.jpg>
@@ -2766,7 +2769,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 137--138
 
  []
 
-<Figures/warped_scanned_image.jpg, id=477, 1023.825pt x 1330.9725pt>
+<Figures/warped_scanned_image.jpg, id=491, 1023.825pt x 1330.9725pt>
 File: Figures/warped_scanned_image.jpg Graphic file (type jpg)
 
 <use Figures/warped_scanned_image.jpg>
@@ -2774,7 +2777,7 @@ Package pdftex.def Info: Figures/warped_scanned_image.jpg used on input line 14
 1.
 (pdftex.def)             Requested size: 393.96294pt x 512.1496pt.
  [19 <./Figures/warped_scanned_image.jpg>] <Figures/thresholded_reference_image
-.jpg, id=482, 1023.825pt x 1330.9725pt>
+.jpg, id=496, 1023.825pt x 1330.9725pt>
 File: Figures/thresholded_reference_image.jpg Graphic file (type jpg)
 
 <use Figures/thresholded_reference_image.jpg>
@@ -2792,7 +2795,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 151--164
  []
 
 [20 <./Figures/thresholded_reference_image.jpg>]
-<Figures/thresholded_scanned_image.jpg, id=487, 1023.825pt x 1330.9725pt>
+<Figures/thresholded_scanned_image.jpg, id=501, 1023.825pt x 1330.9725pt>
 File: Figures/thresholded_scanned_image.jpg Graphic file (type jpg)
 
 <use Figures/thresholded_scanned_image.jpg>
@@ -2809,7 +2812,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 177--178
 
  []
 
-<Figures/background_subtraction.jpg, id=492, 1023.825pt x 1330.9725pt>
+<Figures/background_subtraction.jpg, id=506, 1023.825pt x 1330.9725pt>
 File: Figures/background_subtraction.jpg Graphic file (type jpg)
 
 <use Figures/background_subtraction.jpg>
@@ -2826,7 +2829,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 189--193
 
  []
 
-<Figures/thresholded_restored_image.jpg, id=497, 1023.825pt x 1330.9725pt>
+<Figures/thresholded_restored_image.jpg, id=511, 1023.825pt x 1330.9725pt>
 File: Figures/thresholded_restored_image.jpg Graphic file (type jpg)
 
 <use Figures/thresholded_restored_image.jpg>
@@ -2843,7 +2846,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 204--205
 
  []
 
-<Figures/restored_image.jpg, id=502, 1023.825pt x 1330.9725pt>
+<Figures/restored_image.jpg, id=516, 1023.825pt x 1330.9725pt>
 File: Figures/restored_image.jpg Graphic file (type jpg)
 
 <use Figures/restored_image.jpg>
@@ -2866,14 +2869,14 @@ Chapter 4.
 
  (./Appendices/AppendixA.tex
 Appendix A.
-<Figures/scanned_image2.jpg, id=517, 1505.625pt x 883.3pt>
+<Figures/scanned_image2.jpg, id=531, 1505.625pt x 883.3pt>
 File: Figures/scanned_image2.jpg Graphic file (type jpg)
 
 <use Figures/scanned_image2.jpg>
 Package pdftex.def Info: Figures/scanned_image2.jpg used on input line 13.
 (pdftex.def)             Requested size: 426.78722pt x 250.38434pt.
 
-<Figures/warped_image2.jpg, id=518, 1198.4775pt x 590.205pt>
+<Figures/warped_image2.jpg, id=532, 1198.4775pt x 590.205pt>
 File: Figures/warped_image2.jpg Graphic file (type jpg)
 
 <use Figures/warped_image2.jpg>
@@ -2886,57 +2889,113 @@ Package pdftex.def Info: Figures/warped_image2.jpg used on input line 21.
 
 
  <./Figures/scanned_image2.jpg> <./Figures/warped_image2.jpg>]
-<Figures/scanned_image3.jpg, id=523, 1697.34125pt x 3062.44125pt>
+<Figures/scanned_image3.jpg, id=537, 1697.34125pt x 3062.44125pt>
 File: Figures/scanned_image3.jpg Graphic file (type jpg)
 
 <use Figures/scanned_image3.jpg>
 Package pdftex.def Info: Figures/scanned_image3.jpg used on input line 31.
 (pdftex.def)             Requested size: 134.02892pt x 241.84842pt.
 
-<Figures/warped_image3.jpg, id=524, 1216.545pt x 2734.215pt>
+<Figures/warped_image3.jpg, id=538, 1216.545pt x 2734.215pt>
 File: Figures/warped_image3.jpg Graphic file (type jpg)
 
 <use Figures/warped_image3.jpg>
 Package pdftex.def Info: Figures/warped_image3.jpg used on input line 39.
 (pdftex.def)             Requested size: 101.26093pt x 227.62204pt.
  [27 <./Figures/scanned_image3.jpg> <./Figures/warped_image3.jpg>]
-<Figures/reference_image2.jpg, id=529, 927.465pt x 1201.48875pt>
+<Figures/test_reference_image.jpg, id=543, 1084.05pt x 1927.2pt>
+File: Figures/test_reference_image.jpg Graphic file (type jpg)
+
+<use Figures/test_reference_image.jpg>
+Package pdftex.def Info: Figures/test_reference_image.jpg used on input line 49
+.
+(pdftex.def)             Requested size: 288.0824pt x 512.1496pt.
+ [28 <./Figures/test_reference_image.jpg>] <Figures/test_warped_reference_image
+.jpg, id=548, 999.735pt x 1300.86pt>
+File: Figures/test_warped_reference_image.jpg Graphic file (type jpg)
+
+<use Figures/test_warped_reference_image.jpg>
+Package pdftex.def Info: Figures/test_warped_reference_image.jpg used on input 
+line 59.
+(pdftex.def)             Requested size: 393.60197pt x 512.1496pt.
+ [29 <./Figures/test_warped_reference_image.jpg>]
+<Figures/reference_image2.jpg, id=553, 927.465pt x 1201.48875pt>
 File: Figures/reference_image2.jpg Graphic file (type jpg)
 
 <use Figures/reference_image2.jpg>
-Package pdftex.def Info: Figures/reference_image2.jpg used on input line 53.
+Package pdftex.def Info: Figures/reference_image2.jpg used on input line 74.
 (pdftex.def)             Requested size: 395.3491pt x 512.1496pt.
- [28 <./Figures/reference_image2.jpg>]
-<Figures/filled_document1.jpg, id=534, 1084.05pt x 1927.2pt>
+ [30 <./Figures/reference_image2.jpg>]
+<Figures/filled_document1.jpg, id=559, 1084.05pt x 1927.2pt>
 File: Figures/filled_document1.jpg Graphic file (type jpg)
 
 <use Figures/filled_document1.jpg>
-Package pdftex.def Info: Figures/filled_document1.jpg used on input line 61.
+Package pdftex.def Info: Figures/filled_document1.jpg used on input line 82.
 (pdftex.def)             Requested size: 304.07779pt x 540.60236pt.
 
-<Figures/restored_image2.jpg, id=535, 927.465pt x 1201.48875pt>
+<Figures/restored_image2.jpg, id=560, 927.465pt x 1201.48875pt>
 File: Figures/restored_image2.jpg Graphic file (type jpg)
 
 <use Figures/restored_image2.jpg>
-Package pdftex.def Info: Figures/restored_image2.jpg used on input line 69.
+Package pdftex.def Info: Figures/restored_image2.jpg used on input line 90.
 (pdftex.def)             Requested size: 417.31294pt x 540.60236pt.
 
-<Figures/filled_document2.jpg, id=536, 1084.05pt x 1927.2pt>
+<Figures/filled_document2.jpg, id=561, 1084.05pt x 1927.2pt>
 File: Figures/filled_document2.jpg Graphic file (type jpg)
 
 <use Figures/filled_document2.jpg>
-Package pdftex.def Info: Figures/filled_document2.jpg used on input line 77.
+Package pdftex.def Info: Figures/filled_document2.jpg used on input line 98.
 (pdftex.def)             Requested size: 304.07779pt x 540.60236pt.
 
-<Figures/restored_image3.jpg, id=537, 927.465pt x 1201.48875pt>
+<Figures/restored_image3.jpg, id=562, 927.465pt x 1201.48875pt>
 File: Figures/restored_image3.jpg Graphic file (type jpg)
 
 <use Figures/restored_image3.jpg>
-Package pdftex.def Info: Figures/restored_image3.jpg used on input line 85.
+Package pdftex.def Info: Figures/restored_image3.jpg used on input line 106.
 (pdftex.def)             Requested size: 417.31294pt x 540.60236pt.
-) [29 <./Figures/filled_document1.jpg>]
-[30 <./Figures/restored_image2.jpg>] [31 <./Figures/filled_document2.jpg>]
-[32 <./Figures/restored_image3.jpg>]
+File: Figures/test_warped_reference_image.jpg Graphic file (type jpg)
+
+<use Figures/test_warped_reference_image.jpg>
+Package pdftex.def Info: Figures/test_warped_reference_image.jpg used on input 
+line 116.
+(pdftex.def)             Requested size: 393.60197pt x 512.1496pt.
+
+<Figures/test_scanned_image.jpg, id=563, 1084.05pt x 1927.2pt>
+File: Figures/test_scanned_image.jpg Graphic file (type jpg)
+
+<use Figures/test_scanned_image.jpg>
+Package pdftex.def Info: Figures/test_scanned_image.jpg used on input line 124.
+
+(pdftex.def)             Requested size: 304.07779pt x 540.60236pt.
+
+<Figures/test_restored_image.jpg, id=564, 999.735pt x 1300.86pt>
+File: Figures/test_restored_image.jpg Graphic file (type jpg)
+
+<use Figures/test_restored_image.jpg>
+Package pdftex.def Info: Figures/test_restored_image.jpg used on input line 132
+.
+(pdftex.def)             Requested size: 415.46198pt x 540.60236pt.
+
+<Figures/test_scanned_image_2.jpg, id=565, 1084.05pt x 1927.2pt>
+File: Figures/test_scanned_image_2.jpg Graphic file (type jpg)
+
+<use Figures/test_scanned_image_2.jpg>
+Package pdftex.def Info: Figures/test_scanned_image_2.jpg used on input line 14
+0.
+(pdftex.def)             Requested size: 304.07779pt x 540.60236pt.
+
+<Figures/test_restored_image_2.jpg, id=566, 999.735pt x 1300.86pt>
+File: Figures/test_restored_image_2.jpg Graphic file (type jpg)
+
+<use Figures/test_restored_image_2.jpg>
+Package pdftex.def Info: Figures/test_restored_image_2.jpg used on input line 1
+48.
+(pdftex.def)             Requested size: 415.46198pt x 540.60236pt.
+) [31 <./Figures/filled_document1.jpg>]
+[32 <./Figures/restored_image2.jpg>] [33 <./Figures/filled_document2.jpg>]
+[34 <./Figures/restored_image3.jpg>] [35] [36 <./Figures/test_scanned_image.jpg
+>] [37 <./Figures/test_restored_image.jpg>] [38 <./Figures/test_scanned_image_2
+.jpg>] [39 <./Figures/test_restored_image_2.jpg>]
 \openout2 = `Appendices/AppendixB.aux'.
 
  (./Appendices/AppendixB.tex
@@ -2951,16 +3010,16 @@ Overfull \hbox (11.72533pt too wide) in paragraph at lines 5--8
  []
 
 1: section
-[33
+[40
 
 
 
-] [34] [35] [36] [37] [38] [39]
+] [41] [42] [43] [44] [45] [46]
 Overfull \hbox (14.75589pt too wide) in paragraph at lines 442--443
 [][][][][][][][][][][][][][][][][][][][][][]  
  []
 
-[40]
+[47]
 Overfull \hbox (14.75589pt too wide) in paragraph at lines 443--445
 [][][][][][][][][][][][][][][][][][][][][][]  
  []
@@ -2975,17 +3034,17 @@ Overfull \hbox (14.75589pt too wide) in paragraph at lines 462--464
 [][][][][][][][][][][][][][][][][][][][][][]  
  []
 
-[41] [42] [43] [44] [45] [46] [47] [48] [49] [50] [51]
+[48] [49] [50] [51] [52] [53] [54] [55] [56] [57] [58]
 Overfull \hbox (32.75589pt too wide) in paragraph at lines 995--997
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
 
-[52] [53] [54] [55] [56] [57] [58] [59]
+[59] [60] [61] [62] [63] [64] [65] [66]
 Overfull \hbox (56.75589pt too wide) in paragraph at lines 1443--1445
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-[60] [61] [62] [63] [64] [65] [66] [67] [68] [69] [70] [71] [72] [73]
+[67] [68] [69] [70] [71] [72] [73] [74] [75] [76] [77] [78] [79] [80]
 Overfull \hbox (32.75589pt too wide) in paragraph at lines 2099--2100
 [][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
@@ -2995,18 +3054,18 @@ Overfull \hbox (98.75589pt too wide) in paragraph at lines 2100--2102
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]  
  []
 
-[74] [75] [76] [77] [78] [79]
+[81] [82] [83] [84] [85] [86]
 Overfull \hbox (176.75589pt too wide) in paragraph at lines 2374--2376
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][]  
  []
 
-[80] [81]
+[87] [88]
 Overfull \hbox (80.75589pt too wide) in paragraph at lines 2466--2468
 [][][][][][][][][][][][][][][][][][]  
  []
 
-[82] [83] [84] [85] [86] [87] [88] [89] [90]
+[89] [90] [91] [92] [93] [94] [95] [96] [97]
 Overfull \hbox (2.75589pt too wide) in paragraph at lines 2917--2918
 [][][][][][][][][][][][][][][][][][]  
  []
@@ -3016,12 +3075,12 @@ Overfull \hbox (2.75589pt too wide) in paragraph at lines 2925--2926
 [][][][][][][][][][][][][][][][][][]  
  []
 
-[91]) [92]
+[98]) [99]
 1: section
-[93
+[100
 
 
-] [94]
+] [101]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 268.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
  (./main.aux (./Chapters/Chapter1.aux) (./Chapters/Chapter2.aux)
@@ -3029,15 +3088,12 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 268.
 ) (./Appendices/AppendixB.aux))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 268.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 268.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 4E3A4C1D220CB2E3544AFD2A0DB3BED6;6284.
 
 
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
+LaTeX Warning: There were multiply-defined labels.
 
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 88DA2989DF178258F02AFD7DAAD55D4C;6284
-(rerunfilecheck)             After:  37495D3024286796622E4606892AE7FE;6284.
 
 Package biblatex Warning: Please rerun LaTeX.
 (biblatex)                Page breaks have changed.
@@ -3047,32 +3103,29 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 52518 strings out of 493013
- 1053426 string characters out of 6136993
- 1431512 words of memory out of 5000000
- 52239 multiletter control sequences out of 15000+600000
+ 52567 strings out of 493013
+ 1054774 string characters out of 6136993
+ 1431511 words of memory out of 5000000
+ 52269 multiletter control sequences out of 15000+600000
  42946 words of font info for 75 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  64i,22n,97p,10379b,3337s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{appendix*.2935} has been referenced but does not 
-exist, replaced by a fixed one
-
-{d:/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}<d:/texlive/2016/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2016/texmf-dist/font
-s/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2016/texmf-dist/fonts/type1/p
-ublic/amsfonts/cm/cmmi8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmr10.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><d
-:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><d:/texlive/
-2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><d:/texlive/2016/texmf
--dist/fonts/type1/urw/courier/ucrr8a.pfb><d:/texlive/2016/texmf-dist/fonts/type
-1/urw/palatino/uplb8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/
-uplr8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><d:/
-texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on main.pdf (101 pages, 9863256 bytes).
+{d:/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}<d:/texlive/2016/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2016/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb><d:/texlive/2016/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmmi8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmr10.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr8.pfb><d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+<d:/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb><d:/texliv
+e/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><d:/texlive/2016/tex
+mf-dist/fonts/type1/urw/courier/ucrr8a.pfb><d:/texlive/2016/texmf-dist/fonts/ty
+pe1/urw/palatino/uplb8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatin
+o/uplr8a.pfb><d:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb><d
+:/texlive/2016/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on main.pdf (108 pages, 13561679 bytes).
 PDF statistics:
- 4476 PDF objects out of 5155 (max. 8388607)
- 4290 compressed objects within 43 object streams
- 3120 named destinations out of 3580 (max. 500000)
- 532 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 4529 PDF objects out of 5155 (max. 8388607)
+ 4329 compressed objects within 44 object streams
+ 3133 named destinations out of 3580 (max. 500000)
+ 562 words of extra memory for PDF output out of 10000 (max. 10000000)
 
