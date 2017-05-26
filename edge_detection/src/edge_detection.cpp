@@ -304,8 +304,6 @@ bool check_for_connected_strong_edges(int arr[],int size)
     int count = 0;
     for(int i = 0; i < size; i++)
 	if(arr[i] == STRONG_EDGE)
-//		count++;
-//	if(count > 1)
 		return true;	
  
     return false;   

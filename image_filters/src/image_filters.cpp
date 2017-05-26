@@ -78,9 +78,6 @@ Mat image_padding(const Mat& input_image, int offset)
 
    Mat image = input_image.clone();
 
-//   if(image.type() != CV_8UC1)
-//  	image.convertTo(image, CV_8UC1);
-
    for(int j = 0; j < input_image.rows ; j++)
         for(int i = 0; i < input_image.cols; i++)
         {
@@ -198,7 +195,6 @@ Mat bilateral_convolve(const Mat& input_image, const Mat& gaussian_kernel, float
 		    weight = gaussian_kernel.at<float>(m,n) * range_weight ;
 		    value += neighboring_pixel_intensity*weight;
 		    cumulative_weight += weight ;
-		    //std::cout<<flipped_kernel.at<double>(m,n)<<std::endl;
 		}
 
 	   // Normalize the value
@@ -206,9 +202,6 @@ Mat bilateral_convolve(const Mat& input_image, const Mat& gaussian_kernel, float
        }
 
   Mat depadded_image = image_depadding(convolved_image, offset);
-
-//  if(depadded_image.type() != input_image.type())
-//	depadded_image.convertTo(depadded_image,input_image.type());
   
   return depadded_image;
 }
@@ -537,6 +530,7 @@ Mat fourier_transform(const Mat& padded_image)
 {
 	Mat image;
 	padded_image.convertTo(image,CV_32F);
+
 	//Real part and imaginary part
 	Mat images[] = {Mat_<float>(image), Mat::zeros(image.size(), CV_32F)};
 	Mat complex_image;
@@ -672,7 +666,6 @@ Mat inverse_filter(const Mat& noisy_image, Mat kernel, int kernel_size, float st
    multiply(images[0],weight,images[0]);
    multiply(images[1],weight,images[1]);
 
-
    merge(images,2,complex_image);
 
    idft(complex_image,complex_image);
@@ -691,60 +684,3 @@ Mat inverse_filter(const Mat& noisy_image, Mat kernel, int kernel_size, float st
 
    return normalized_image;
 }
-
-///////////////////////////////////////////
-//
-//	MAIN FUNCTION
-//
-///////////////////////////////////////////
-
-//int main(int argc, char** argv )
-//{
-//    Mat image1, grayscale_image1, eroded_image1, dilated_image1,image2, grayscale_image2, eroded_image2, dilated_image2;
-
-//    image1 = imread( "../images/letter_a.jpg", 1 );
-//    image2 = imread( "../images/fingerprint.png", 1 );
-
-//    if ( !image1.data || !image2.data )
-//    {
-//        printf("No image data \n");
-//        return -1;
-//    }
-
-//    cvtColor( image1, grayscale_image1, CV_BGR2GRAY );
-//    eroded_image1 = morphological_filter(grayscale_image1,3,false);
-//    dilated_image1 = morphological_filter(grayscale_image1,3,true);
-
-//    cvtColor( image2, grayscale_image2, CV_BGR2GRAY );
-//    eroded_image2 = morphological_filter(grayscale_image2,3,false);
-//    dilated_image2 = morphological_filter(grayscale_image2,3,true);
-
-//    namedWindow("Original Image 1", WINDOW_AUTOSIZE);
-//    imwrite( "../results/morphological_filter/grayscale_image1.jpg", grayscale_image1 );
-//    imshow("Original Image 1", grayscale_image1);
-
-//    namedWindow("Eroded Image 1", WINDOW_AUTOSIZE);
-//    imwrite( "../results/morphological_filter/eroded_image1.jpg", eroded_image1 );
-//    imshow("Eroded Image 1", eroded_image1 );
-
-//    namedWindow("Dilated Image 1", WINDOW_AUTOSIZE);
-//    imwrite( "../results/morphological_filter/dilated_image1.jpg", dilated_image1 );
-//    imshow("Dilated Image 1", dilated_image1);
-
-//    namedWindow("Original Image 2", WINDOW_AUTOSIZE);
-//    imwrite( "../results/morphological_filter/grayscale_image2.jpg", grayscale_image2 );
-//    imshow("Original Image 2", grayscale_image2);
-
-//    namedWindow("Eroded Image 2", WINDOW_AUTOSIZE);
-//    imwrite( "../results/morphological_filter/eroded_image2.jpg", eroded_image2 );
-//    imshow("Eroded Image 2", eroded_image2 );
-
-//    namedWindow("Dilated Image 2", WINDOW_AUTOSIZE);
-//    imwrite( "../results/morphological_filter/dilated_image2.jpg", dilated_image2 );
-//    imshow("Dilated Image 2", dilated_image2 );
-
-//    waitKey(0);
-
-//    return 0;
-//}
-

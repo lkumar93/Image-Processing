@@ -102,12 +102,8 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
    if(horizontal_vertical_image.type() != CV_32F)
 	horizontal_vertical_image.convertTo(horizontal_vertical_image,CV_32F);
 
-   //GaussianBlur( horizontal_image_squared, horizontal_image_squared, Size(9,9), 1.4, 1.4, BORDER_DEFAULT );
-   //GaussianBlur( vertical_image_squared, vertical_image_squared, Size(9,9), 1.4, 1.4, BORDER_DEFAULT );
-   //GaussianBlur( horizontal_vertical_image, horizontal_vertical_image, Size(9,9), 1.4, 1.4, BORDER_DEFAULT );
-
    Mat harris_response= Mat(horizontal_image.rows, horizontal_image.cols, CV_32F, 0.0);
-   Mat corners = Mat::zeros(horizontal_image.rows, horizontal_image.cols, CV_8UC1 );//Mat(horizontal_image.rows, horizontal_image.cols, CV_8UC1, 0);
+   Mat corners = Mat::zeros(horizontal_image.rows, horizontal_image.cols, CV_8UC1 );
 
    float k = 0.04;
 
@@ -115,8 +111,7 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
       for(int i = 0; i < horizontal_image.cols ; i++)
       {
 	   //R = Det(H) - k(Trace(H))^2;
-   
-	   //cout<<harris_response.at<float>(j,i);
+
 	   harris_response.at<float>(j,i) = horizontal_image_squared.at<float>(j,i)*vertical_image_squared.at<float>(j,i) -pow(horizontal_vertical_image.at<float>(j,i),2) 
 					    - k*(pow(horizontal_image_squared.at<float>(j,i)+vertical_image_squared.at<float>(j,i),2));
 		
@@ -128,7 +123,7 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
 
    int offset = (size+1)/2 - 1;
 
-    normalize(harris_response, harris_response, 1,0,NORM_MINMAX);
+   normalize(harris_response, harris_response, 1,0,NORM_MINMAX);
 
    std::vector<IndexT> best_corner_indices;
 
@@ -264,12 +259,7 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
 
 	   count++;
 
-//	   if(corner_size-corner_indices.size() >= 0.0)
-//	  	 local_threshold-=step_size;
-
-//	   else
-		local_threshold+=step_size;
-
+           local_threshold+=step_size;
 
 	   corner_size = corner_indices.size();
 
@@ -298,44 +288,8 @@ CornerT harris_corner_detection(const Mat& input_image, float threshold, int ite
 	  }
      }
 
-
    CornerT CornerData;
    CornerData.corner_indices = best_corner_indices;
    CornerData.corner_image = image_with_corners;
    return CornerData; 
 }
-
-///////////////////////////////////////////
-//
-//	MAIN FUNCTION
-//
-///////////////////////////////////////////
-
-//int main(int argc, char** argv )
-//{
-//    Mat grayscale_image;
-
-//    Mat image = imread( "../images/contour2.png", 1 );
-
-//    if ( !image.data )
-//     {
-//        printf("No image data \n");
-//        return -1;
-//     }
-
-//    Mat image_resized = Mat::zeros( 640, 480, CV_8UC3 );
-
-//    resize(image, image_resized , image_resized.size(), 0, 0);
-
-//    cvtColor( image_resized, grayscale_image, CV_BGR2GRAY );
-
-//    Mat corners = harris_corner_detection(grayscale_image);
-
-//    namedWindow("Receipt", WINDOW_AUTOSIZE);
-//    imshow("Receipt", corners); 
-//	
-//    waitKey(0);
-
-//    return 0;
-//}
-
